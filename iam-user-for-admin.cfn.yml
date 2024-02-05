@@ -1,0 +1,33 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: IAM user with administrator access
+Parameters:
+  AdministratorUserName:
+    Type: String
+    Default: local-administrator
+    Description: Administrator user name
+  InitialPassword:
+    Type: String
+    NoEcho: true
+    Description: Initial password for the administrator user
+Resources:
+  AdministratorUser:
+    Type: AWS::IAM::User
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      UserName: !Ref AdministratorUserName
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      LoginProfile:
+        Password: !Ref InitialPassword
+        PasswordResetRequired: true
+      Tags:
+        - Key: Name
+          Value: !Ref AdministratorUserName
+Outputs:
+  AdministratorUserArn:
+    Value: !GetAtt AdministratorUser.Arn
+    Export:
+      Name: !Sub ${AWS::Region}-${AWS::StackName}-AdministratorUserArn
