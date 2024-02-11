@@ -1,9 +1,3 @@
-variable "region" {
-  description = "AWS region"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable "system_name" {
   description = "System name"
   type        = string
@@ -14,4 +8,10 @@ variable "env_type" {
   description = "Environment type"
   type        = string
   default     = "com"
+}
+
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+  default     = null
 }
