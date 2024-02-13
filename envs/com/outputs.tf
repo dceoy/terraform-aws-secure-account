@@ -12,3 +12,18 @@ output "s3_storage_lens_configuration_id" {
   description = "S3 Storage Lens configuration ID"
   value       = module.s3.s3_storage_lens_configuration_id
 }
+
+output "budgets_budget_id" {
+  description = "Budgets budget ID"
+  value       = length(module.budgets) > 0 ? module.budgets[0].budgets_budget_id : null
+}
+
+output "budgets_sns_topic_id" {
+  description = "Budgets SNS topic ID"
+  value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_id : null
+}
+
+output "budgets_sns_topic_kms_key_arn" {
+  description = "Budgets SNS topic KMS key ARN"
+  value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_kms_key_arn : null
+}

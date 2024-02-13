@@ -1,9 +1,3 @@
-variable "region" {
-  description = "AWS region"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable "system_name" {
   description = "System name"
   type        = string
@@ -25,5 +19,11 @@ variable "budget_time_unit" {
 variable "budget_limit_amount_in_usd" {
   description = "Budget limit amount in USD"
   type        = number
+  default     = 1000
+}
+
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
   default     = null
 }
