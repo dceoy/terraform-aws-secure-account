@@ -37,7 +37,7 @@ resource "aws_sns_topic_policy" "cost" {
         Principal = {
           Service = "budgets.amazonaws.com"
         }
-        Action   = "sns:Publish"
+        Action   = ["sns:Publish"]
         Resource = [aws_sns_topic.cost.arn]
         Condition = {
           StringEquals = {
@@ -65,7 +65,7 @@ resource "aws_kms_key" "cost" {
         Principal = {
           AWS = "arn:aws:iam::${local.account_id}:root"
         }
-        Action   = "kms:*"
+        Action   = ["kms:*"]
         Resource = "*"
       }
     ]

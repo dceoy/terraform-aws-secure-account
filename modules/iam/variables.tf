@@ -9,3 +9,9 @@ variable "env_type" {
   type        = string
   default     = "com"
 }
+
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+  default     = null
+}

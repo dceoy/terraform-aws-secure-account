@@ -1,0 +1,86 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: GuardDuty, SNS, and EventBridge
+Parameters:
+  SystemName:
+    Description: Set the system name.
+    Type: String
+    Default: adm
+  EnvType:
+    Description: Set the environment type.
+    Type: String
+    Default: com
+  FindingPublishingFrequency:
+    Description: Set the finding publishing frequency.
+    Type: String
+    Default: SIX_HOURS
+    AllowedValues:
+      - FIFTEEN_MINUTES
+      - ONE_HOUR
+      - SIX_HOURS
+Resources:
+  GuardDutyDetector:
+    Type: AWS::GuardDuty::Detector
+    Properties:
+      Enable: true
+      FindingPublishingFrequency: !Ref FindingPublishingFrequency
+      DataSources:
+        S3Logs:
+          Enable: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${SystemName}-${EnvType}-guardduty-detector
+        - Key: SystemName
+          Value: !Ref SystemName
+        - Key: EnvType
+          Value: !Ref EnvType
+  SnsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${SystemName}-${EnvType}-guardduty-sns-topic
+      Tags:
+        - Key: Name
+          Value: !Sub ${SystemName}-${EnvType}-guardduty-sns-topic
+        - Key: SystemName
+          Value: !Ref SystemName
+        - Key: EnvType
+          Value: !Ref EnvType
+  SnsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action:
+              - sns:Publish
+            Resource: '*'
+      Topics:
+        - !Ref SnsTopic
+  EventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub ${SystemName}-${EnvType}-guardduty-event-rule
+      EventPattern:
+        source:
+          - aws.guardduty
+        detail-type:
+          - GuardDuty Finding
+      Targets:
+        - Arn: !Ref SnsTopic
+          Id: !Sub ${SystemName}-${EnvType}-guardduty-sns-topic
+Outputs:
+  GuardDutyDetector:
+    Value: !Ref GuardDutyDetector
+    Export:
+      Name: !Sub ${AWS::Region}-${AWS::StackName}-GuardDutyDetector
+  SnsTopic:
+    Value: !Ref SnsTopic
+    Export:
+      Name: !Sub ${AWS::Region}-${AWS::StackName}-SnsTopic
+  EventRule:
+    Value: !Ref EventRule
+    Export:
+      Name: !Sub ${AWS::Region}-${AWS::StackName}-EventRule
