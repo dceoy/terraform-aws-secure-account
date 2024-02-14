@@ -1,7 +1,7 @@
 # tfsec:ignore:aws-iam-no-password-reuse
 # tfsec:ignore:aws-iam-set-max-password-age
 resource "aws_iam_account_password_policy" "strict" {
-  minimum_password_length        = 8 # tfsec:ignore:aws-iam-set-minimum-password-length
+  minimum_password_length        = 14
   allow_users_to_change_password = true
   require_lowercase_characters   = true
   require_uppercase_characters   = true
@@ -10,6 +10,7 @@ resource "aws_iam_account_password_policy" "strict" {
 }
 
 resource "aws_accessanalyzer_analyzer" "account" {
+  count         = var.enable_iam_accessanalyzer ? 1 : 0
   analyzer_name = "${var.system_name}-${var.env_type}-account-accessanalyzer"
   type          = "ACCOUNT"
   tags = {

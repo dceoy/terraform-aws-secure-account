@@ -15,3 +15,9 @@ variable "account_id" {
   type        = string
   default     = null
 }
+
+variable "enable_iam_accessanalyzer" {
+  description = "Enable IAM Access Analyzer"
+  type        = bool
+  default     = true
+}

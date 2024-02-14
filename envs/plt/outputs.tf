@@ -26,17 +26,17 @@ output "s3_storage_lens_configuration_id" {
 
 output "cloudtrail_trail_id" {
   description = "CloudTrail trail ID"
-  value       = module.cloudtrail.cloudtrail_trail_id
+  value       = length(module.cloudtrail) > 0 ? module.cloudtrail[0].cloudtrail_trail_id : null
 }
 
 output "cloudtrail_kms_key_arn" {
   description = "CloudTrail KMS key ARN"
-  value       = module.cloudtrail.cloudtrail_kms_key_arn
+  value       = length(module.cloudtrail) > 0 ? module.cloudtrail[0].cloudtrail_kms_key_arn : null
 }
 
 output "cloudtrail_kms_key_alias_name" {
   description = "CloudTrail KMS key alias name"
-  value       = module.cloudtrail.cloudtrail_kms_key_alias_name
+  value       = length(module.cloudtrail) > 0 ? module.cloudtrail[0].cloudtrail_kms_key_alias_name : null
 }
 
 output "iam_accessanalyzer_id" {
@@ -72,4 +72,19 @@ output "budgets_sns_topic_id" {
 output "budgets_sns_topic_kms_key_arn" {
   description = "Budgets SNS topic KMS key ARN"
   value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_kms_key_arn : null
+}
+
+output "guardduty_stack_set_id" {
+  description = "GuardDuty StackSet ID"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_id : null
+}
+
+output "guardduty_stack_set_instance_ids" {
+  description = "GuardDuty StackSet Instance IDs"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : null
+}
+
+output "available_regions" {
+  description = "Available regions"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].available_regions : null
 }

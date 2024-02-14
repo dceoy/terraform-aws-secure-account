@@ -27,3 +27,9 @@ variable "partition" {
   type        = string
   default     = null
 }
+
+variable "enable_s3_storage_lens" {
+  description = "Enable S3 Storage Lens"
+  type        = bool
+  default     = true
+}

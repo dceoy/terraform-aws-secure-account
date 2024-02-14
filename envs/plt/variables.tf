@@ -25,5 +25,35 @@ variable "budget_time_unit" {
 variable "budget_limit_amount_in_usd" {
   description = "Budget limit amount in USD"
   type        = number
-  default     = null
+  default     = 1000
+}
+
+variable "enable_s3_storage_lens" {
+  description = "Enable S3 Storage Lens"
+  type        = bool
+  default     = true
+}
+
+variable "enable_cloudtrail" {
+  description = "Enable CloudTrail"
+  type        = bool
+  default     = true
+}
+
+variable "enable_iam_accessanalyzer" {
+  description = "Enable IAM Access Analyzer"
+  type        = bool
+  default     = true
+}
+
+variable "enable_budgets" {
+  description = "Enable Budgets"
+  type        = bool
+  default     = true
+}
+
+variable "enable_guardduty" {
+  description = "Enable GuardDuty"
+  type        = bool
+  default     = true
 }

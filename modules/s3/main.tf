@@ -228,6 +228,7 @@ resource "aws_kms_alias" "common" {
 }
 
 resource "aws_s3control_storage_lens_configuration" "common" {
+  count      = var.enable_s3_storage_lens ? 1 : 0
   config_id  = "${var.system_name}-${var.env_type}-s3-storage-lens-configuration"
   account_id = local.account_id
   storage_lens_configuration {

@@ -1,11 +1,13 @@
 module "s3" {
-  source      = "../../modules/s3"
-  system_name = var.system_name
-  env_type    = var.env_type
-  account_id  = local.account_id
+  source                 = "../../modules/s3"
+  system_name            = var.system_name
+  env_type               = var.env_type
+  account_id             = local.account_id
+  enable_s3_storage_lens = var.enable_s3_storage_lens
 }
 
 module "cloudtrail" {
+  count        = var.enable_cloudtrail ? 1 : 0
   source       = "../../modules/cloudtrail"
   system_name  = var.system_name
   env_type     = var.env_type
@@ -15,10 +17,11 @@ module "cloudtrail" {
 }
 
 module "iam" {
-  source      = "../../modules/iam"
-  system_name = var.system_name
-  env_type    = var.env_type
-  account_id  = local.account_id
+  source                    = "../../modules/iam"
+  system_name               = var.system_name
+  env_type                  = var.env_type
+  account_id                = local.account_id
+  enable_iam_accessanalyzer = var.enable_iam_accessanalyzer
 }
 
 module "ecr" {
@@ -26,7 +29,7 @@ module "ecr" {
 }
 
 module "budgets" {
-  count                      = var.budget_limit_amount_in_usd != null ? 1 : 0
+  count                      = var.enable_budgets ? 1 : 0
   source                     = "../../modules/budgets"
   system_name                = var.system_name
   env_type                   = var.env_type
@@ -36,6 +39,7 @@ module "budgets" {
 }
 
 module "guardduty" {
+  count                                               = var.enable_guardduty ? 1 : 0
   source                                              = "../../modules/guardduty"
   system_name                                         = var.system_name
   env_type                                            = var.env_type

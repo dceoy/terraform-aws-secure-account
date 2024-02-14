@@ -1,6 +1,6 @@
 output "iam_accessanalyzer_id" {
   description = "IAM Access Analyzer ID"
-  value       = aws_accessanalyzer_analyzer.account.id
+  value       = length(aws_accessanalyzer_analyzer.account) > 0 ? aws_accessanalyzer_analyzer.account[0].id : null
 }
 
 output "cloudformation_stackset_administration_iam_role_arn" {

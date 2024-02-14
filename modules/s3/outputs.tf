@@ -20,5 +20,5 @@ output "s3_kms_key_alias_name" {
 
 output "s3_storage_lens_configuration_id" {
   description = "S3 Storage Lens configuration ID"
-  value       = aws_s3control_storage_lens_configuration.common.id
+  value       = length(aws_s3control_storage_lens_configuration.common) > 0 ? aws_s3control_storage_lens_configuration.common[0].id : null
 }
