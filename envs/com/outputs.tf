@@ -1,3 +1,44 @@
+
+output "s3_base_s3_bucket_id" {
+  description = "S3 base S3 bucket ID"
+  value       = module.s3.s3_base_s3_bucket_id
+}
+
+output "s3_accesslog_s3_bucket_id" {
+  description = "S3 accesslog S3 bucket ID"
+  value       = module.s3.s3_accesslog_s3_bucket_id
+}
+
+output "s3_kms_key_arn" {
+  description = "S3 KMS key ARN"
+  value       = module.s3.s3_kms_key_arn
+}
+
+output "s3_kms_key_alias_name" {
+  description = "S3 KMS key alias name"
+  value       = module.s3.s3_kms_key_alias_name
+}
+
+output "s3_storage_lens_configuration_id" {
+  description = "S3 Storage Lens configuration ID"
+  value       = module.s3.s3_storage_lens_configuration_id
+}
+
+output "cloudtrail_trail_id" {
+  description = "CloudTrail trail ID"
+  value       = module.cloudtrail.cloudtrail_trail_id
+}
+
+output "cloudtrail_kms_key_arn" {
+  description = "CloudTrail KMS key ARN"
+  value       = module.cloudtrail.cloudtrail_kms_key_arn
+}
+
+output "cloudtrail_kms_key_alias_name" {
+  description = "CloudTrail KMS key alias name"
+  value       = module.cloudtrail.cloudtrail_kms_key_alias_name
+}
+
 output "iam_accessanalyzer_id" {
   description = "IAM Access Analyzer ID"
   value       = module.iam.iam_accessanalyzer_id
@@ -16,11 +57,6 @@ output "cloudformation_stackset_execution_iam_role_arn" {
 output "ecr_registry_id" {
   description = "ECR registry ID"
   value       = module.ecr.ecr_registry_id
-}
-
-output "s3_storage_lens_configuration_id" {
-  description = "S3 Storage Lens configuration ID"
-  value       = module.s3.s3_storage_lens_configuration_id
 }
 
 output "budgets_budget_id" {

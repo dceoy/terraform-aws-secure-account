@@ -10,6 +10,10 @@ resource "aws_cloudformation_stack_set" "guardduty" {
     FindingPublishingFrequency = var.finding_publishing_frequency
   }
   template_body = file("${path.module}/guardduty.cfn.yml")
+  operation_preferences {
+    region_concurrency_type   = "PARALLEL"
+    max_concurrent_percentage = 100
+  }
   tags = {
     Name       = "${var.system_name}-${var.env_type}-guardduty-cloudformation-stackset"
     SystemName = var.system_name
@@ -23,7 +27,7 @@ resource "aws_cloudformation_stack_set_instance" "guardduty" {
   region         = each.key
   stack_set_name = aws_cloudformation_stack_set.guardduty.name
   operation_preferences {
-    region_concurrency_type = "PARALLEL"
-    max_concurrent_count    = length(local.available_regions)
+    region_concurrency_type   = "PARALLEL"
+    max_concurrent_percentage = 100
   }
 }

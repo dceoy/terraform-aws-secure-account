@@ -10,6 +10,12 @@ variable "env_type" {
   default     = "com"
 }
 
+variable "s3_bucket_id" {
+  description = "S3 bucket ID"
+  type        = string
+  default     = null
+}
+
 variable "region" {
   description = "AWS region"
   type        = string
@@ -18,12 +24,6 @@ variable "region" {
 
 variable "account_id" {
   description = "AWS account ID"
-  type        = string
-  default     = null
-}
-
-variable "partition" {
-  description = "AWS partition"
   type        = string
   default     = null
 }
