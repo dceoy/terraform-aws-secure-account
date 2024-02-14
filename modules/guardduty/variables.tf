@@ -7,7 +7,7 @@ variable "system_name" {
 variable "env_type" {
   description = "Environment type"
   type        = string
-  default     = "com"
+  default     = "plt"
 }
 
 variable "account_id" {

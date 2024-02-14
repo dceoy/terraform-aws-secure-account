@@ -9,7 +9,7 @@ Parameters:
   EnvType:
     Description: Set the environment type.
     Type: String
-    Default: com
+    Default: plt
   FindingPublishingFrequency:
     Description: Set the finding publishing frequency.
     Type: String
