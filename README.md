@@ -28,26 +28,26 @@ Installation
 4.  Create configuration files.
 
     ```sh
-    $ cp envs/com/example.tfbackend envs/com/aws.tfbackend
-    $ vi envs/com/aws.tfbackend     # => edit
-    $ cp envs/com/example.tfvars envs/com/com.tfvars
-    $ vi envs/com/com.tfvars        # => edit
+    $ cp envs/plt/example.tfbackend envs/plt/aws.tfbackend
+    $ vi envs/plt/aws.tfbackend     # => edit
+    $ cp envs/plt/example.tfvars envs/plt/plt.tfvars
+    $ vi envs/plt/plt.tfvars        # => edit
     ```
 
 5.  Initialize a new Terraform working directory.
 
     ```sh
-    $ terraform -chdir='envs/com/' init -reconfigure -backend-config='./aws.tfbackend'
+    $ terraform -chdir='envs/plt/' init -reconfigure -backend-config='./aws.tfbackend'
     ```
 
 6.  Generates a speculative execution plan. (Optional)
 
     ```sh
-    $ terraform -chdir='envs/com/' plan -var-file='./com.tfvars'
+    $ terraform -chdir='envs/plt/' plan -var-file='./plt.tfvars'
     ```
 
 7.  Creates or updates infrastructure.
 
     ```sh
-    $ terraform -chdir='envs/com/' apply -var-file='./com.tfvars' -auto-approve
+    $ terraform -chdir='envs/plt/' apply -var-file='./plt.tfvars' -auto-approve
     ```

@@ -7,7 +7,7 @@ variable "region" {
 variable "system_name" {
   description = "System name"
   type        = string
-  default     = "adm"
+  default     = "acc"
 }
 
 variable "env_type" {

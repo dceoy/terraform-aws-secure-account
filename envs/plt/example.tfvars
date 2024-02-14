@@ -1,5 +1,5 @@
 region                     = "us-east-1"
-system_name                = "adm"
+system_name                = "acc"
 env_type                   = "plt"
 budget_time_unit           = "ANNUALLY"
 budget_limit_amount_in_usd = 1000
