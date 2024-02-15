@@ -21,3 +21,9 @@ variable "s3_kms_key_arn" {
   type        = string
   default     = null
 }
+
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+  default     = null
+}

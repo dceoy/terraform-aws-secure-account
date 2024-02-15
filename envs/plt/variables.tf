@@ -28,6 +28,12 @@ variable "budget_limit_amount_in_usd" {
   default     = 1000
 }
 
+variable "enable_iam_accessanalyzer" {
+  description = "Enable IAM Access Analyzer"
+  type        = bool
+  default     = true
+}
+
 variable "enable_s3_storage_lens" {
   description = "Enable S3 Storage Lens"
   type        = bool
@@ -40,20 +46,20 @@ variable "enable_cloudtrail" {
   default     = true
 }
 
-variable "enable_iam_accessanalyzer" {
-  description = "Enable IAM Access Analyzer"
+variable "enable_guardduty" {
+  description = "Enable GuardDuty"
+  type        = bool
+  default     = true
+}
+
+variable "enable_config" {
+  description = "Enable Config"
   type        = bool
   default     = true
 }
 
 variable "enable_budgets" {
   description = "Enable Budgets"
-  type        = bool
-  default     = true
-}
-
-variable "enable_guardduty" {
-  description = "Enable GuardDuty"
   type        = bool
   default     = true
 }

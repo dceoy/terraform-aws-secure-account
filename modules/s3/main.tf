@@ -116,10 +116,22 @@ resource "aws_s3_bucket_lifecycle_configuration" "accesslog" {
 resource "aws_s3_bucket_policy" "base" {
   bucket = aws_s3_bucket.base.arn
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AWSCloudTrailAclCheck"
+        Sid       = "DenyUnencryptedObjects"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = ["s3:PutObject"]
+        Resource  = "${aws_s3_bucket.base.arn}/*"
+        Condition = {
+          Null = {
+            "s3:x-amz-server-side-encryption-aws-kms-key-id" = "true"
+          }
+        }
+      },
+      {
+        Sid    = "CloudTrailGetS3BucketAcl"
         Effect = "Allow"
         Principal = {
           Service = "cloudtrail.amazonaws.com"
@@ -133,34 +145,19 @@ resource "aws_s3_bucket_policy" "base" {
         }
       },
       {
-        Sid    = "AWSCloudTrailWrite"
+        Sid    = "CloudTrailPutS3Object"
         Effect = "Allow"
         Principal = {
           Service = "cloudtrail.amazonaws.com"
         }
         Action   = ["s3:PutObject"]
-        Resource = "${aws_s3_bucket.base.arn}/*"
+        Resource = "${aws_s3_bucket.base.arn}/cloudtrail/AWSLogs/${local.account_id}/*"
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
-          },
+          }
           StringLike = {
             "aws:SourceArn" = "arn:${local.partition}:cloudtrail:${local.region}:${local.account_id}:trail/*"
-          }
-        }
-      },
-      {
-        Sid       = "DenyUnencryptedObjectUploads"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = ["s3:*"]
-        Resource = [
-          aws_s3_bucket.base.arn,
-          "${aws_s3_bucket.base.arn}/*"
-        ]
-        Condition = {
-          Bool = {
-            "aws:SecureTransport" = "false"
           }
         }
       }
@@ -171,10 +168,23 @@ resource "aws_s3_bucket_policy" "base" {
 resource "aws_s3_bucket_policy" "accesslog" {
   bucket = aws_s3_bucket.accesslog.arn
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version = "2012-10-17"
+    Id      = "${aws_s3_bucket.accesslog.id}-policy"
     Statement = [
       {
-        Sid    = "S3ServerAccessLogsPolicy"
+        Sid       = "DenyUnencryptedObjects"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = ["s3:PutObject"]
+        Resource  = "${aws_s3_bucket.base.arn}/*"
+        Condition = {
+          Null = {
+            "s3:x-amz-server-side-encryption-aws-kms-key-id" = "true"
+          }
+        }
+      },
+      {
+        Sid    = "S3PutS3AccessLogs"
         Effect = "Allow"
         Principal = {
           Service = "logging.s3.amazonaws.com"
@@ -182,28 +192,13 @@ resource "aws_s3_bucket_policy" "accesslog" {
         Action = [
           "s3:PutObject"
         ]
-        Resource = "arn:aws:s3:::${var.system_name}-${var.env_type}-*/*"
+        Resource = "${aws_s3_bucket.accesslog.arn}/*"
         Condition = {
           ArnLike = {
-            "aws:SourceArn" : "arn:aws:s3:::${var.system_name}-${var.env_type}-*"
-          },
-          StringEquals = {
-            "aws:SourceAccount" : local.account_id
+            "aws:SourceArn" = "arn:aws:s3:::${var.system_name}-${var.env_type}-*"
           }
-        }
-      },
-      {
-        Sid       = "DenyUnencryptedObjectUploads"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = ["s3:*"]
-        Resource = [
-          aws_s3_bucket.accesslog.arn,
-          "${aws_s3_bucket.accesslog.arn}/*"
-        ]
-        Condition = {
-          Bool = {
-            "aws:SecureTransport" = "false"
+          StringEquals = {
+            "aws:SourceAccount" = local.account_id
           }
         }
       }
@@ -215,6 +210,64 @@ resource "aws_kms_key" "common" {
   description             = "KMS key for encrypting S3 bucket objects"
   deletion_window_in_days = 30
   enable_key_rotation     = true
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "UserAccessKMS"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${local.account_id}:root"
+        }
+        Action   = ["kms:*"]
+        Resource = "*"
+      },
+      {
+        Sid    = "S3EncryptS3AccessLogs"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:ViaService"    = "s3.${local.region}.amazonaws.com"
+            "kms:CallerAccount" = local.account_id
+          }
+        }
+      },
+      {
+        Sid    = "CloudTrailEncryptCloudTrailLogs"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = ["kms:GenerateDataKey*"]
+        Resource = "*"
+        Condition = {
+          StringLike = {
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+          }
+          StringLike = {
+            "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
+          }
+        }
+      },
+      {
+        Sid    = "ConfigEncryptConfigLogs"
+        Effect = "Allow"
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+        Action   = ["kms:GenerateDataKey"]
+        Resource = "*"
+      }
+    ]
+  })
   tags = {
     Name       = "${var.system_name}-${var.env_type}-s3-kms-key"
     SystemName = var.system_name

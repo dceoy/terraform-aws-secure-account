@@ -1,3 +1,11 @@
+module "iam" {
+  source                    = "../../modules/iam"
+  system_name               = var.system_name
+  env_type                  = var.env_type
+  account_id                = local.account_id
+  enable_iam_accessanalyzer = var.enable_iam_accessanalyzer
+}
+
 module "s3" {
   source                 = "../../modules/s3"
   system_name            = var.system_name
@@ -7,25 +15,32 @@ module "s3" {
 }
 
 module "cloudtrail" {
-  count        = var.enable_cloudtrail ? 1 : 0
-  source       = "../../modules/cloudtrail"
-  system_name  = var.system_name
-  env_type     = var.env_type
-  s3_bucket_id = module.s3.s3_base_s3_bucket_id
-  region       = var.region
-  account_id   = local.account_id
+  count          = var.enable_cloudtrail ? 1 : 0
+  source         = "../../modules/cloudtrail"
+  system_name    = var.system_name
+  env_type       = var.env_type
+  s3_bucket_id   = module.s3.s3_base_s3_bucket_id
+  s3_kms_key_arn = module.s3.s3_kms_key_arn
 }
 
-module "iam" {
-  source                    = "../../modules/iam"
-  system_name               = var.system_name
-  env_type                  = var.env_type
-  account_id                = local.account_id
-  enable_iam_accessanalyzer = var.enable_iam_accessanalyzer
+module "guardduty" {
+  count                                               = var.enable_guardduty ? 1 : 0
+  source                                              = "../../modules/guardduty"
+  system_name                                         = var.system_name
+  env_type                                            = var.env_type
+  account_id                                          = local.account_id
+  cloudformation_stackset_administration_iam_role_arn = module.iam.cloudformation_stackset_administration_iam_role_arn
+  cloudformation_stackset_execution_iam_role_arn      = module.iam.cloudformation_stackset_execution_iam_role_arn
 }
 
-module "ecr" {
-  source = "../../modules/ecr"
+module "config" {
+  count          = var.enable_config ? 1 : 0
+  source         = "../../modules/config"
+  system_name    = var.system_name
+  env_type       = var.env_type
+  s3_bucket_id   = module.s3.s3_base_s3_bucket_id
+  s3_kms_key_arn = module.s3.s3_kms_key_arn
+  account_id     = local.account_id
 }
 
 module "budgets" {
@@ -38,12 +53,6 @@ module "budgets" {
   account_id                 = local.account_id
 }
 
-module "guardduty" {
-  count                                               = var.enable_guardduty ? 1 : 0
-  source                                              = "../../modules/guardduty"
-  system_name                                         = var.system_name
-  env_type                                            = var.env_type
-  account_id                                          = local.account_id
-  cloudformation_stackset_administration_iam_role_arn = module.iam.cloudformation_stackset_administration_iam_role_arn
-  cloudformation_stackset_execution_iam_role_arn      = module.iam.cloudformation_stackset_execution_iam_role_arn
+module "ecr" {
+  source = "../../modules/ecr"
 }

@@ -32,7 +32,7 @@ resource "aws_sns_topic_policy" "cost" {
     Id      = "${aws_sns_topic.cost.name}-policy"
     Statement = [
       {
-        Sid    = "Allow-SNS-Topic-Permissions"
+        Sid    = "BudgetsPublishSNSMessages"
         Effect = "Allow"
         Principal = {
           Service = "budgets.amazonaws.com"
@@ -53,20 +53,40 @@ resource "aws_sns_topic_policy" "cost" {
 }
 
 resource "aws_kms_key" "cost" {
-  description             = "KMS key for encrypting SNS topic for budgets"
+  description             = "KMS key for encrypting SNS messages for Budgets"
   deletion_window_in_days = 30
   enable_key_rotation     = true
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "Enable IAM User Permissions"
+        Sid    = "UserAccessKMS"
         Effect = "Allow"
         Principal = {
           AWS = "arn:aws:iam::${local.account_id}:root"
         }
         Action   = ["kms:*"]
         Resource = "*"
+      },
+      {
+        Sid    = "BudgetsEncryptAndDecryptSNSMessages"
+        Effect = "Allow"
+        Principal = {
+          Service = "budgets.amazonaws.com"
+        }
+        Action = [
+          "kms:GenerateDataKey*",
+          "kms:Decrypt"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = local.account_id
+          }
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:budgets::${local.account_id}:*"
+          }
+        }
       }
     ]
   })

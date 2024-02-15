@@ -1,3 +1,17 @@
+output "iam_accessanalyzer_id" {
+  description = "IAM Access Analyzer ID"
+  value       = module.iam.iam_accessanalyzer_id
+}
+
+output "cloudformation_stackset_administration_iam_role_arn" {
+  description = "CloudFormation StackSet Administration IAM Role ARN"
+  value       = module.iam.cloudformation_stackset_administration_iam_role_arn
+}
+
+output "cloudformation_stackset_execution_iam_role_arn" {
+  description = "CloudFormation StackSet Execution IAM Role ARN"
+  value       = module.iam.cloudformation_stackset_execution_iam_role_arn
+}
 
 output "s3_base_s3_bucket_id" {
   description = "S3 base S3 bucket ID"
@@ -29,34 +43,19 @@ output "cloudtrail_trail_id" {
   value       = length(module.cloudtrail) > 0 ? module.cloudtrail[0].cloudtrail_trail_id : null
 }
 
-output "cloudtrail_kms_key_arn" {
-  description = "CloudTrail KMS key ARN"
-  value       = length(module.cloudtrail) > 0 ? module.cloudtrail[0].cloudtrail_kms_key_arn : null
+output "guardduty_stack_set_id" {
+  description = "GuardDuty StackSet ID"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_id : null
 }
 
-output "cloudtrail_kms_key_alias_name" {
-  description = "CloudTrail KMS key alias name"
-  value       = length(module.cloudtrail) > 0 ? module.cloudtrail[0].cloudtrail_kms_key_alias_name : null
+output "guardduty_stack_set_instance_ids" {
+  description = "GuardDuty StackSet Instance IDs"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : null
 }
 
-output "iam_accessanalyzer_id" {
-  description = "IAM Access Analyzer ID"
-  value       = module.iam.iam_accessanalyzer_id
-}
-
-output "cloudformation_stackset_administration_iam_role_arn" {
-  description = "CloudFormation StackSet Administration IAM Role ARN"
-  value       = module.iam.cloudformation_stackset_administration_iam_role_arn
-}
-
-output "cloudformation_stackset_execution_iam_role_arn" {
-  description = "CloudFormation StackSet Execution IAM Role ARN"
-  value       = module.iam.cloudformation_stackset_execution_iam_role_arn
-}
-
-output "ecr_registry_id" {
-  description = "ECR registry ID"
-  value       = module.ecr.ecr_registry_id
+output "available_regions" {
+  description = "Available regions"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].available_regions : null
 }
 
 output "budgets_budget_id" {
@@ -74,17 +73,7 @@ output "budgets_sns_topic_kms_key_arn" {
   value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_kms_key_arn : null
 }
 
-output "guardduty_stack_set_id" {
-  description = "GuardDuty StackSet ID"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_id : null
-}
-
-output "guardduty_stack_set_instance_ids" {
-  description = "GuardDuty StackSet Instance IDs"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : null
-}
-
-output "available_regions" {
-  description = "Available regions"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].available_regions : null
+output "ecr_registry_id" {
+  description = "ECR registry ID"
+  value       = module.ecr.ecr_registry_id
 }

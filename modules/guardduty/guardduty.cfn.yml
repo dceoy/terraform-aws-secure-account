@@ -50,8 +50,14 @@ Resources:
     Properties:
       PolicyDocument:
         Version: 2012-10-17
+        Id:
+          Fn::Join:
+            - ''
+            - - !GetAtt SnsTopic.TopicName
+              - -policy
         Statement:
-          - Effect: Allow
+          - Sid: EventBridgePublishSnsMessages
+            Effect: Allow
             Principal:
               Service: events.amazonaws.com
             Action:
@@ -70,7 +76,7 @@ Resources:
           - GuardDuty Finding
       Targets:
         - Arn: !Ref SnsTopic
-          Id: !Sub ${SystemName}-${EnvType}-guardduty-sns-topic
+          Id: !GetAtt SnsTopic.TopicName
 Outputs:
   GuardDutyDetector:
     Value: !Ref GuardDutyDetector
