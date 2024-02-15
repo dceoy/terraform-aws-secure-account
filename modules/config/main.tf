@@ -11,7 +11,7 @@ resource "aws_config_delivery_channel" "base" {
   depends_on     = [aws_config_configuration_recorder.base]
   name           = "${var.system_name}-${var.env_type}-config-delivery-channel"
   s3_bucket_name = var.s3_bucket_id
-  s3_key_prefix  = "config/awslabs/${local.account_id}/"
+  s3_key_prefix  = "config"
   s3_kms_key_arn = var.s3_kms_key_arn
   snapshot_delivery_properties {
     delivery_frequency = "One_Hour"
@@ -79,5 +79,25 @@ resource "aws_iam_role" "base" {
         }
       ]
     })
+  }
+}
+
+resource "aws_config_config_rule" "root_mfa" {
+  depends_on  = [aws_config_configuration_recorder.base]
+  name        = "${var.system_name}-${var.env_type}-config-root-mfa-rule"
+  description = "Checks if the root user of the AWS account requires MFA for console sign-in"
+  source {
+    owner             = "AWS"
+    source_identifier = "ROOT_ACCOUNT_MFA_ENABLED"
+  }
+}
+
+resource "aws_config_config_rule" "user_mfa" {
+  depends_on  = [aws_config_configuration_recorder.base]
+  name        = "${var.system_name}-${var.env_type}-config-user-mfa-rule"
+  description = var.allow_non_console_access_without_mfa ? "Checks if the IAM users have MFA enabled" : "Checks if MFA is enabled for all IAM users that use a console password"
+  source {
+    owner             = "AWS"
+    source_identifier = var.allow_non_console_access_without_mfa ? "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS" : "IAM_USER_MFA_ENABLED"
   }
 }

@@ -114,7 +114,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "accesslog" {
 }
 
 resource "aws_s3_bucket_policy" "base" {
-  bucket = aws_s3_bucket.base.arn
+  bucket = aws_s3_bucket.base.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -140,7 +140,7 @@ resource "aws_s3_bucket_policy" "base" {
         Resource = aws_s3_bucket.base.arn
         Condition = {
           StringLike = {
-            "aws:SourceArn" = "arn:${local.partition}:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
           }
         }
       },
@@ -157,7 +157,7 @@ resource "aws_s3_bucket_policy" "base" {
             "s3:x-amz-acl" = "bucket-owner-full-control"
           }
           StringLike = {
-            "aws:SourceArn" = "arn:${local.partition}:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
           }
         }
       }
@@ -166,7 +166,7 @@ resource "aws_s3_bucket_policy" "base" {
 }
 
 resource "aws_s3_bucket_policy" "accesslog" {
-  bucket = aws_s3_bucket.accesslog.arn
+  bucket = aws_s3_bucket.accesslog.id
   policy = jsonencode({
     Version = "2012-10-17"
     Id      = "${aws_s3_bucket.accesslog.id}-policy"
@@ -176,7 +176,7 @@ resource "aws_s3_bucket_policy" "accesslog" {
         Effect    = "Deny"
         Principal = "*"
         Action    = ["s3:PutObject"]
-        Resource  = "${aws_s3_bucket.base.arn}/*"
+        Resource  = "${aws_s3_bucket.accesslog.arn}/*"
         Condition = {
           Null = {
             "s3:x-amz-server-side-encryption-aws-kms-key-id" = "true"
@@ -189,16 +189,14 @@ resource "aws_s3_bucket_policy" "accesslog" {
         Principal = {
           Service = "logging.s3.amazonaws.com"
         }
-        Action = [
-          "s3:PutObject"
-        ]
+        Action   = ["s3:PutObject"]
         Resource = "${aws_s3_bucket.accesslog.arn}/*"
         Condition = {
-          ArnLike = {
-            "aws:SourceArn" = "arn:aws:s3:::${var.system_name}-${var.env_type}-*"
-          }
           StringEquals = {
             "aws:SourceAccount" = local.account_id
+          }
+          StringLike = {
+            "aws:SourceArn" = "arn:aws:s3:::${var.system_name}-${var.env_type}-*"
           }
         }
       }

@@ -27,3 +27,9 @@ variable "account_id" {
   type        = string
   default     = null
 }
+
+variable "allow_non_console_access_without_mfa" {
+  description = "Allow non-console access without MFA"
+  type        = bool
+  default     = false
+}

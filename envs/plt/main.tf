@@ -34,13 +34,14 @@ module "guardduty" {
 }
 
 module "config" {
-  count          = var.enable_config ? 1 : 0
-  source         = "../../modules/config"
-  system_name    = var.system_name
-  env_type       = var.env_type
-  s3_bucket_id   = module.s3.s3_base_s3_bucket_id
-  s3_kms_key_arn = module.s3.s3_kms_key_arn
-  account_id     = local.account_id
+  count                                = var.enable_config ? 1 : 0
+  source                               = "../../modules/config"
+  system_name                          = var.system_name
+  env_type                             = var.env_type
+  s3_bucket_id                         = module.s3.s3_base_s3_bucket_id
+  s3_kms_key_arn                       = module.s3.s3_kms_key_arn
+  account_id                           = local.account_id
+  allow_non_console_access_without_mfa = false
 }
 
 module "securityhub" {
