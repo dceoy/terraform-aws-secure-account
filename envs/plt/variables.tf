@@ -58,6 +58,12 @@ variable "enable_config" {
   default     = true
 }
 
+variable "enable_securityhub" {
+  description = "Enable Security Hub"
+  type        = bool
+  default     = true
+}
+
 variable "enable_budgets" {
   description = "Enable Budgets"
   type        = bool

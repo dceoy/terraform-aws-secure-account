@@ -8,4 +8,5 @@ enable_s3_storage_lens     = true
 enable_cloudtrail          = true
 enable_guardduty           = true
 enable_config              = true
+enable_securityhub         = true
 enable_budgets             = true

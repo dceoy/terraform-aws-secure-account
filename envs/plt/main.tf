@@ -43,6 +43,11 @@ module "config" {
   account_id     = local.account_id
 }
 
+module "securityhub" {
+  count  = var.enable_securityhub ? 1 : 0
+  source = "../../modules/securityhub"
+}
+
 module "budgets" {
   count                      = var.enable_budgets ? 1 : 0
   source                     = "../../modules/budgets"

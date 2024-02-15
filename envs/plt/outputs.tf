@@ -58,6 +58,11 @@ output "available_regions" {
   value       = length(module.guardduty) > 0 ? module.guardduty[0].available_regions : null
 }
 
+output "securityhub_id" {
+  description = "Security Hub ID"
+  value       = length(module.securityhub) > 0 ? module.securityhub[0].securityhub_id : null
+}
+
 output "budgets_budget_id" {
   description = "Budgets budget ID"
   value       = length(module.budgets) > 0 ? module.budgets[0].budgets_budget_id : null
