@@ -37,7 +37,7 @@ Installation
 5.  Initialize a new Terraform working directory.
 
     ```sh
-    $ terraform -chdir='envs/plt/' init -reconfigure -backend-config='./aws.tfbackend'
+    $ terraform -chdir='envs/plt/' init -upgrade -reconfigure -backend-config='./aws.tfbackend'
     ```
 
 6.  Generates a speculative execution plan. (Optional)

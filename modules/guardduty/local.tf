@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_regions" "available" {
-  all_regions = true
+  all_regions = false
 }
 
 locals {
@@ -12,4 +12,5 @@ locals {
 locals {
   cloudformation_stackset_administration_iam_role_arn = var.cloudformation_stackset_administration_iam_role_arn != null ? var.cloudformation_stackset_administration_iam_role_arn : "arn:aws:iam::${local.account_id}:role/AWSCloudFormationStackSetAdministrationRole"
   cloudformation_stackset_execution_iam_role_name     = var.cloudformation_stackset_execution_iam_role_arn != null ? element(split("/", var.cloudformation_stackset_execution_iam_role_arn), 1) : "AWSCloudFormationStackSetExecutionRole"
+  guardduty_sns_topic_name                            = "${var.system_name}-${var.env_type}-guardduty-sns-topic"
 }
