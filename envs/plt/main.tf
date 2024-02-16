@@ -11,6 +11,7 @@ module "s3" {
   system_name            = var.system_name
   env_type               = var.env_type
   account_id             = local.account_id
+  s3_expiration_days     = var.s3_expiration_days
   enable_s3_storage_lens = var.enable_s3_storage_lens
 }
 

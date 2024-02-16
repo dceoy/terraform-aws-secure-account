@@ -28,6 +28,12 @@ variable "budget_limit_amount_in_usd" {
   default     = 1000
 }
 
+variable "s3_expiration_days" {
+  description = "S3 expiration days"
+  type        = number
+  default     = null
+}
+
 variable "enable_iam_accessanalyzer" {
   description = "Enable IAM Access Analyzer"
   type        = bool

@@ -92,6 +92,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "base" {
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
+    expiration {
+      days = var.s3_expiration_days
+    }
   }
 }
 
@@ -109,6 +112,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "accesslog" {
     }
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
+    }
+    expiration {
+      days = var.s3_expiration_days
     }
   }
 }
@@ -136,28 +142,63 @@ resource "aws_s3_bucket_policy" "base" {
         Principal = {
           Service = "cloudtrail.amazonaws.com"
         }
-        Action   = ["s3:GetBucketAcl"]
+        Action = [
+          "s3:GetBucketAcl",
+          "s3:ListBucket"
+        ]
         Resource = aws_s3_bucket.base.arn
         Condition = {
-          StringLike = {
+          ArnLike = {
             "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
           }
         }
       },
       {
-        Sid    = "CloudTrailPutS3Object"
+        Sid    = "CloudTrailPutS3Objects"
         Effect = "Allow"
         Principal = {
           Service = "cloudtrail.amazonaws.com"
         }
         Action   = ["s3:PutObject"]
-        Resource = "${aws_s3_bucket.base.arn}/cloudtrail/AWSLogs/${local.account_id}/*"
+        Resource = "${aws_s3_bucket.base.arn}/${var.cloudtrail_s3_key_prefix}/AWSLogs/${local.account_id}/*"
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
           }
-          StringLike = {
+          ArnLike = {
             "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+          }
+        }
+      },
+      {
+        Sid    = "ConfigGetS3BucketAclAndListS3Bucket"
+        Effect = "Allow"
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+        Action = [
+          "s3:GetBucketAcl",
+          "s3:ListBucket"
+        ]
+        Resource = [aws_s3_bucket.base.arn]
+        Condition = {
+          StringEquals = {
+            "AWS:SourceAccount" = local.account_id
+          }
+        }
+      },
+      {
+        Sid    = "ConfigPutS3Buckets"
+        Effect = "Allow"
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+        Action   = ["s3:PutObject"]
+        Resource = ["${aws_s3_bucket.base.arn}/${var.config_s3_key_prefix}/AWSLogs/${local.account_id}/Config/*"]
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl"      = "bucket-owner-full-control"
+            "AWS:SourceAccount" = local.account_id
           }
         }
       }
@@ -195,7 +236,7 @@ resource "aws_s3_bucket_policy" "accesslog" {
           StringEquals = {
             "aws:SourceAccount" = local.account_id
           }
-          StringLike = {
+          ArnLike = {
             "aws:SourceArn" = "arn:aws:s3:::${var.system_name}-${var.env_type}-*"
           }
         }
@@ -247,11 +288,9 @@ resource "aws_kms_key" "common" {
         Action   = ["kms:GenerateDataKey*"]
         Resource = "*"
         Condition = {
-          StringLike = {
-            "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
-          }
-          StringLike = {
-            "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
+          ArnLike = {
+            "aws:SourceArn"                            = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
           }
         }
       },
@@ -261,8 +300,16 @@ resource "aws_kms_key" "common" {
         Principal = {
           Service = "config.amazonaws.com"
         }
-        Action   = ["kms:GenerateDataKey"]
+        Action = [
+          "kms:GenerateDataKey",
+          "kms:Decrypt"
+        ]
         Resource = "*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceAccount" = local.account_id
+          }
+        }
       }
     ]
   })

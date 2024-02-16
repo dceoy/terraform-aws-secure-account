@@ -21,3 +21,9 @@ variable "s3_kms_key_arn" {
   type        = string
   default     = null
 }
+
+variable "cloudtrail_s3_key_prefix" {
+  description = "CloudTrail S3 key prefix"
+  type        = string
+  default     = "cloudtrail"
+}

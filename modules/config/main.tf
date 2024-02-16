@@ -1,24 +1,24 @@
-resource "aws_config_configuration_recorder" "base" {
+resource "aws_config_configuration_recorder" "main" {
   name     = "${var.system_name}-${var.env_type}-config-recorder"
-  role_arn = aws_iam_role.base.arn
+  role_arn = aws_iam_role.main.arn
   recording_group {
     all_supported                 = true
     include_global_resource_types = true
   }
 }
 
-resource "aws_config_delivery_channel" "base" {
-  depends_on     = [aws_config_configuration_recorder.base]
+resource "aws_config_delivery_channel" "main" {
+  depends_on     = [aws_config_configuration_recorder.main]
   name           = "${var.system_name}-${var.env_type}-config-delivery-channel"
   s3_bucket_name = var.s3_bucket_id
-  s3_key_prefix  = "config"
+  s3_key_prefix  = var.config_s3_key_prefix
   s3_kms_key_arn = var.s3_kms_key_arn
   snapshot_delivery_properties {
     delivery_frequency = "One_Hour"
   }
 }
 
-resource "aws_iam_role" "base" {
+resource "aws_iam_role" "main" {
   name = "${var.system_name}-${var.env_type}-config-iam-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -50,16 +50,14 @@ resource "aws_iam_role" "base" {
           Resource = ["arn:aws:s3:::${var.s3_bucket_id}"]
         },
         {
-          Sid    = "ConfigPutS3Objects"
-          Effect = "Allow"
-          Action = [
-            "s3:PutObject",
-            "s3:PutObjectAcl"
-          ]
-          Resource = ["arn:aws:s3:::${var.s3_bucket_id}/*"],
+          Sid      = "ConfigPutS3Objects"
+          Effect   = "Allow"
+          Action   = ["s3:PutObject"]
+          Resource = ["arn:aws:s3:::${var.s3_bucket_id}/${var.config_s3_key_prefix}/AWSLogs/${local.account_id}/Config/*"]
           Condition = {
-            StringLike = {
-              "s3:x-amz-acl" = "bucket-owner-full-control"
+            StringEquals = {
+              "s3:x-amz-acl"      = "bucket-owner-full-control"
+              "AWS:SourceAccount" = local.account_id
             }
           }
         },
@@ -83,7 +81,7 @@ resource "aws_iam_role" "base" {
 }
 
 resource "aws_config_config_rule" "root_mfa" {
-  depends_on  = [aws_config_configuration_recorder.base]
+  depends_on  = [aws_config_configuration_recorder.main]
   name        = "${var.system_name}-${var.env_type}-config-root-mfa-rule"
   description = "Checks if the root user of the AWS account requires MFA for console sign-in"
   source {
@@ -93,7 +91,7 @@ resource "aws_config_config_rule" "root_mfa" {
 }
 
 resource "aws_config_config_rule" "user_mfa" {
-  depends_on  = [aws_config_configuration_recorder.base]
+  depends_on  = [aws_config_configuration_recorder.main]
   name        = "${var.system_name}-${var.env_type}-config-user-mfa-rule"
   description = var.allow_non_console_access_without_mfa ? "Checks if the IAM users have MFA enabled" : "Checks if MFA is enabled for all IAM users that use a console password"
   source {

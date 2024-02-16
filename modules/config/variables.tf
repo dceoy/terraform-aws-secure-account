@@ -33,3 +33,9 @@ variable "allow_non_console_access_without_mfa" {
   type        = bool
   default     = false
 }
+
+variable "config_s3_key_prefix" {
+  description = "Config S3 key prefix"
+  type        = string
+  default     = "config"
+}
