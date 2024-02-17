@@ -22,7 +22,7 @@ Installation
     ```sh
     $ aws cloudformation create-stack \
         --stack-name s3-and-dynamodb-for-terraform \
-        --template-body file://s3-and-dynamodb-for-terraform.cfn.yml
+        --template-body file://cloudformation/s3-and-dynamodb-for-terraform.cfn.yml
     ```
 
 4.  Create configuration files.
