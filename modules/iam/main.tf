@@ -243,3 +243,24 @@ resource "aws_iam_policy" "mfa" {
     EnvType    = var.env_type
   }
 }
+
+resource "aws_iam_user" "developer" {
+  for_each      = toset(var.iam_user_names)
+  name          = each.key
+  path          = "/"
+  force_destroy = true
+  tags = {
+    Name       = each.key
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
+}
+
+resource "aws_iam_user_group_membership" "developer" {
+  for_each = aws_iam_user.developer
+  user     = each.value.name
+  groups = [
+    aws_iam_group.administrator.name,
+    aws_iam_group.readonly.name
+  ]
+}

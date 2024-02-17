@@ -5,11 +5,9 @@ Parameters:
   SystemName:
     Description: Set the system name.
     Type: String
-    Default: acc
   EnvType:
     Description: Set the environment type.
     Type: String
-    Default: plt
   SnsTopicArn:
     Description: Set the SNS topic ARN.
     Type: String

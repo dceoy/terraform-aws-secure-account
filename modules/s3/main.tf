@@ -125,18 +125,6 @@ resource "aws_s3_bucket_policy" "base" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "DenyUnencryptedObjects"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = ["s3:PutObject"]
-        Resource  = "${aws_s3_bucket.base.arn}/*"
-        Condition = {
-          Null = {
-            "s3:x-amz-server-side-encryption-aws-kms-key-id" = "true"
-          }
-        }
-      },
-      {
         Sid    = "CloudTrailGetS3BucketAcl"
         Effect = "Allow"
         Principal = {
@@ -160,7 +148,7 @@ resource "aws_s3_bucket_policy" "base" {
           Service = "cloudtrail.amazonaws.com"
         }
         Action   = ["s3:PutObject"]
-        Resource = "${aws_s3_bucket.base.arn}/${var.cloudtrail_s3_key_prefix}/AWSLogs/${local.account_id}/*"
+        Resource = ["${aws_s3_bucket.base.arn}/${var.cloudtrail_s3_key_prefix}/AWSLogs/${local.account_id}/*"]
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
@@ -212,18 +200,6 @@ resource "aws_s3_bucket_policy" "accesslog" {
     Version = "2012-10-17"
     Id      = "${aws_s3_bucket.accesslog.id}-policy"
     Statement = [
-      {
-        Sid       = "DenyUnencryptedObjects"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = ["s3:PutObject"]
-        Resource  = "${aws_s3_bucket.accesslog.arn}/*"
-        Condition = {
-          Null = {
-            "s3:x-amz-server-side-encryption-aws-kms-key-id" = "true"
-          }
-        }
-      },
       {
         Sid    = "S3PutS3AccessLogs"
         Effect = "Allow"
@@ -290,7 +266,7 @@ resource "aws_kms_key" "common" {
         Condition = {
           ArnLike = {
             "aws:SourceArn"                            = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
-            "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
           }
         }
       },

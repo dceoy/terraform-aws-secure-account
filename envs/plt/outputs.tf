@@ -38,6 +38,11 @@ output "user_mfa_iam_policy_arn" {
   value       = module.iam.user_mfa_iam_policy_arn
 }
 
+output "iam_user_ids" {
+  description = "IAM user IDs"
+  value       = module.iam.iam_user_ids
+}
+
 output "s3_base_s3_bucket_id" {
   description = "S3 base S3 bucket ID"
   value       = module.s3.s3_base_s3_bucket_id

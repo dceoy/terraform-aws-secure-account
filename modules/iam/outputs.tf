@@ -37,3 +37,8 @@ output "user_mfa_iam_policy_arn" {
   description = "User MFA IAM policy ARN"
   value       = aws_iam_policy.mfa.arn
 }
+
+output "iam_user_ids" {
+  description = "IAM user IDs"
+  value       = [for u in aws_iam_user.developer : u.id]
+}

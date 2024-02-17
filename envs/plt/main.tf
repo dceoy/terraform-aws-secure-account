@@ -4,6 +4,7 @@ module "iam" {
   env_type                  = var.env_type
   account_id                = local.account_id
   account_alias             = var.account_alias
+  iam_user_names            = var.iam_user_names
   enable_iam_accessanalyzer = var.enable_iam_accessanalyzer
 }
 

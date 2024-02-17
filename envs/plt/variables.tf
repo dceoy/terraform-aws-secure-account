@@ -22,6 +22,12 @@ variable "account_alias" {
   default     = null
 }
 
+variable "iam_user_names" {
+  description = "IAM user names"
+  type        = list(string)
+  default     = []
+}
+
 variable "s3_expiration_days" {
   description = "S3 expiration days"
   type        = number

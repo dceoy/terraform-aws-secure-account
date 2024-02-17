@@ -22,6 +22,12 @@ variable "account_alias" {
   default     = null
 }
 
+variable "iam_user_names" {
+  description = "IAM user names"
+  type        = list(string)
+  default     = []
+}
+
 variable "enable_iam_accessanalyzer" {
   description = "Enable IAM Access Analyzer"
   type        = bool
