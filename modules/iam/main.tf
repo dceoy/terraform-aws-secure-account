@@ -1,3 +1,8 @@
+resource "aws_iam_account_alias" "account" {
+  count         = var.account_alias != null ? 1 : 0
+  account_alias = var.account_alias
+}
+
 # tfsec:ignore:aws-iam-no-password-reuse
 # tfsec:ignore:aws-iam-set-max-password-age
 resource "aws_iam_account_password_policy" "strict" {

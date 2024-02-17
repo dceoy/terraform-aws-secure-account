@@ -16,6 +16,18 @@ variable "env_type" {
   default     = "plt"
 }
 
+variable "account_alias" {
+  description = "AWS account alias"
+  type        = string
+  default     = null
+}
+
+variable "s3_expiration_days" {
+  description = "S3 expiration days"
+  type        = number
+  default     = null
+}
+
 variable "budget_time_unit" {
   description = "Budget time unit"
   type        = string
@@ -26,12 +38,6 @@ variable "budget_limit_amount_in_usd" {
   description = "Budget limit amount in USD"
   type        = number
   default     = 1000
-}
-
-variable "s3_expiration_days" {
-  description = "S3 expiration days"
-  type        = number
-  default     = null
 }
 
 variable "enable_iam_accessanalyzer" {

@@ -3,6 +3,7 @@ module "iam" {
   system_name               = var.system_name
   env_type                  = var.env_type
   account_id                = local.account_id
+  account_alias             = var.account_alias
   enable_iam_accessanalyzer = var.enable_iam_accessanalyzer
 }
 

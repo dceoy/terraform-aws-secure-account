@@ -3,13 +3,13 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: IAM user with administrator access
 Parameters:
   AdministratorUserName:
+    Description: Set the administrator user name.
     Type: String
     Default: local-administrator
-    Description: Administrator user name
   InitialPassword:
+    Description: Set the initial password for the administrator user.
     Type: String
     NoEcho: true
-    Description: Initial password for the administrator user
 Resources:
   AdministratorUser:
     Type: AWS::IAM::User

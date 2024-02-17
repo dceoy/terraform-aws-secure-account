@@ -16,6 +16,12 @@ variable "account_id" {
   default     = null
 }
 
+variable "account_alias" {
+  description = "AWS account alias"
+  type        = string
+  default     = null
+}
+
 variable "enable_iam_accessanalyzer" {
   description = "Enable IAM Access Analyzer"
   type        = bool
