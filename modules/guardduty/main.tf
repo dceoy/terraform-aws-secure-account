@@ -7,8 +7,8 @@ resource "aws_cloudformation_stack_set" "guardduty" {
   parameters = {
     SystemName                 = var.system_name
     EnvType                    = var.env_type
-    FindingPublishingFrequency = var.finding_publishing_frequency
-    SnsTopicArn                = aws_sns_topic.events.arn
+    FindingPublishingFrequency = var.guardduty_finding_publishing_frequency
+    SnsTopicArn                = aws_sns_topic.guardduty.arn
   }
   template_body = file("${path.module}/guardduty-and-eventbridge.cfn.yml")
   operation_preferences {
@@ -33,22 +33,22 @@ resource "aws_cloudformation_stack_set_instance" "guardduty" {
   }
 }
 
-resource "aws_sns_topic" "events" {
-  name              = local.guardduty_sns_topic_name
-  display_name      = local.guardduty_sns_topic_name
-  kms_master_key_id = aws_kms_key.events.arn
+resource "aws_sns_topic" "guardduty" {
+  name              = "${var.system_name}-${var.env_type}-guardduty-sns-topic"
+  display_name      = "${var.system_name}-${var.env_type}-guardduty-sns-topic"
+  kms_master_key_id = var.sns_kms_key_arn
   tags = {
-    Name       = local.guardduty_sns_topic_name
+    Name       = "${var.system_name}-${var.env_type}-guardduty-sns-topic"
     SystemName = var.system_name
     EnvType    = var.env_type
   }
 }
 
-resource "aws_sns_topic_policy" "events" {
-  arn = aws_sns_topic.events.arn
+resource "aws_sns_topic_policy" "guardduty" {
+  arn = aws_sns_topic.guardduty.arn
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "${aws_sns_topic.events.name}-policy"
+    Id      = "${aws_sns_topic.guardduty.name}-policy"
     Statement = [
       {
         Sid    = "EventsPublishSNSMessages"
@@ -57,7 +57,7 @@ resource "aws_sns_topic_policy" "events" {
           Service = "events.amazonaws.com"
         }
         Action   = ["sns:Publish"]
-        Resource = [aws_sns_topic.events.arn]
+        Resource = [aws_sns_topic.guardduty.arn]
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = local.account_id
@@ -69,54 +69,4 @@ resource "aws_sns_topic_policy" "events" {
       }
     ]
   })
-}
-
-resource "aws_kms_key" "events" {
-  description             = "KMS key for encrypting SNS messages for Events"
-  deletion_window_in_days = 30
-  enable_key_rotation     = true
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "UserAccessKMS"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${local.account_id}:root"
-        }
-        Action   = ["kms:*"]
-        Resource = "*"
-      },
-      {
-        Sid    = "EventsEncryptAndDecryptSNSMessages"
-        Effect = "Allow"
-        Principal = {
-          Service = "events.amazonaws.com"
-        }
-        Action = [
-          "kms:GenerateDataKey*",
-          "kms:Decrypt"
-        ]
-        Resource = "*"
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = local.account_id
-          }
-          ArnLike = {
-            "aws:SourceArn" = "arn:aws:events:*:${local.account_id}:*"
-          }
-        }
-      }
-    ]
-  })
-  tags = {
-    Name       = "${local.guardduty_sns_topic_name}-kms-key"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
-}
-
-resource "aws_kms_alias" "events" {
-  name          = "alias/${aws_kms_key.events.tags.Name}"
-  target_key_id = aws_kms_key.events.arn
 }

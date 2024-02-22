@@ -10,6 +10,12 @@ variable "env_type" {
   default     = "plt"
 }
 
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+  default     = null
+}
+
 variable "s3_bucket_id" {
   description = "S3 bucket ID"
   type        = string
@@ -22,8 +28,8 @@ variable "s3_kms_key_arn" {
   default     = null
 }
 
-variable "account_id" {
-  description = "AWS account ID"
+variable "sns_kms_key_arn" {
+  description = "SNS KMS key ARN"
   type        = string
   default     = null
 }

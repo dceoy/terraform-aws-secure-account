@@ -230,44 +230,70 @@ resource "aws_iam_policy" "mfa" {
 }
 
 # tfsec:ignore:aws-iam-enforce-group-mfa
-resource "aws_iam_group" "groups" {
-  for_each = local.iam_group_names
-  name     = each.value
-  path     = "/"
+resource "aws_iam_group" "administrator" {
+  name = "${var.system_name}-${var.env_type}-administrator-iam-group"
+  path = "/"
+}
+
+# tfsec:ignore:aws-iam-enforce-group-mfa
+resource "aws_iam_group" "developer" {
+  name = "${var.system_name}-${var.env_type}-developer-iam-group"
+  path = "/"
+}
+
+# tfsec:ignore:aws-iam-enforce-group-mfa
+resource "aws_iam_group" "readonly" {
+  name = "${var.system_name}-${var.env_type}-readonly-iam-group"
+  path = "/"
 }
 
 resource "aws_iam_group_policy_attachment" "administrator" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/IAMUserChangePassword",
-    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
-    "arn:aws:iam::aws:policy/ReadOnlyAccess",
-    aws_iam_policy.mfa.arn,
-    aws_iam_policy.administrator.arn
-  ])
   group      = aws_iam_group.administrator.name
-  policy_arn = each.key
+  policy_arn = aws_iam_policy.administrator.arn
+}
+
+resource "aws_iam_group_policy_attachment" "developer" {
+  group      = aws_iam_group.developer.name
+  policy_arn = aws_iam_policy.developer.arn
 }
 
 resource "aws_iam_group_policy_attachment" "readonly" {
   for_each = toset([
-    "arn:aws:iam::aws:policy/IAMUserChangePassword",
-    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
-    "arn:aws:iam::aws:policy/ReadOnlyAccess",
-    aws_iam_policy.mfa.arn
+    aws_iam_group.administrator.name,
+    aws_iam_group.readonly.name
   ])
-  group      = aws_iam_group.readonly.name
-  policy_arn = each.key
+  group      = each.key
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
 
-resource "aws_iam_group_policy_attachment" "developer" {
+resource "aws_iam_group_policy_attachment" "mfa" {
   for_each = toset([
-    "arn:aws:iam::aws:policy/IAMUserChangePassword",
-    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
-    aws_iam_policy.mfa.arn,
-    aws_iam_policy.developer.arn
+    aws_iam_group.administrator.name,
+    aws_iam_group.developer.name,
+    aws_iam_group.readonly.name
   ])
-  group      = aws_iam_group.developer.name
-  policy_arn = each.key
+  group      = each.key
+  policy_arn = aws_iam_policy.mfa.arn
+}
+
+resource "aws_iam_group_policy_attachment" "password" {
+  for_each = toset([
+    aws_iam_group.administrator.name,
+    aws_iam_group.developer.name,
+    aws_iam_group.readonly.name
+  ])
+  group      = each.key
+  policy_arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
+}
+
+resource "aws_iam_group_policy_attachment" "credential" {
+  for_each = toset([
+    aws_iam_group.administrator.name,
+    aws_iam_group.developer.name,
+    aws_iam_group.readonly.name
+  ])
+  group      = each.key
+  policy_arn = "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials"
 }
 
 resource "aws_iam_user" "users" {
@@ -288,15 +314,23 @@ resource "aws_iam_user" "users" {
   }
 }
 
-resource "aws_iam_user_group_membership" "users" {
+resource "aws_iam_user_group_membership" "administrator" {
   depends_on = [aws_iam_user.users]
-  for_each = toset(
-    concat(
-      [for u in var.administrator_iam_user_names : [u, "administrator"]],
-      [for u in var.developer_iam_user_names : [u, "developer"]],
-      [for u in var.readonly_iam_user_names : [u, "readonly"]]
-    )
-  )
-  user   = each.key[0]
-  groups = [aws_iam_group[each.key[1]].name]
+  for_each   = toset(var.administrator_iam_user_names)
+  user       = each.key
+  groups     = [aws_iam_group.administrator.name]
+}
+
+resource "aws_iam_user_group_membership" "developer" {
+  depends_on = [aws_iam_user.users]
+  for_each   = toset(var.developer_iam_user_names)
+  user       = each.key
+  groups     = [aws_iam_group.developer.name]
+}
+
+resource "aws_iam_user_group_membership" "readonly" {
+  depends_on = [aws_iam_user.users]
+  for_each   = toset(var.readonly_iam_user_names)
+  user       = each.key
+  groups     = [aws_iam_group.readonly.name]
 }

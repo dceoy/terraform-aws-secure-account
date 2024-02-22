@@ -1,16 +1,21 @@
 output "config_configuration_recorder_id" {
   description = "Config configuration recorder ID"
-  value       = aws_config_configuration_recorder.main.id
+  value       = aws_config_configuration_recorder.config.id
 }
 
 output "config_delivery_channel_id" {
   description = "Config delivery channel ID"
-  value       = aws_config_delivery_channel.main.id
+  value       = aws_config_delivery_channel.config.id
 }
 
 output "config_iam_role_arn" {
   description = "Config IAM role ARN"
-  value       = aws_iam_role.main.arn
+  value       = aws_iam_role.config.arn
+}
+
+output "config_sns_topic_arn" {
+  description = "Config SNS topic ARN"
+  value       = aws_sns_topic.config.arn
 }
 
 output "config_root_mfa_rule_id" {

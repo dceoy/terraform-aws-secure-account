@@ -33,9 +33,19 @@ output "user_mfa_iam_policy_arn" {
   value       = module.iam.user_mfa_iam_policy_arn
 }
 
-output "iam_group_arns" {
-  description = "IAM group ARN"
-  value       = module.iam.iam_group_arns
+output "administrator_iam_group_arn" {
+  description = "Administrator IAM group ARN"
+  value       = module.iam.administrator_iam_group_arn
+}
+
+output "developer_iam_group_arn" {
+  description = "Developer IAM group ARN"
+  value       = module.iam.developer_iam_group_arn
+}
+
+output "readonly_iam_group_arn" {
+  description = "Readonly IAM group ARN"
+  value       = module.iam.readonly_iam_group_arn
 }
 
 output "iam_user_ids" {
@@ -51,16 +61,6 @@ output "s3_base_s3_bucket_id" {
 output "s3_accesslog_s3_bucket_id" {
   description = "S3 accesslog S3 bucket ID"
   value       = module.s3.s3_accesslog_s3_bucket_id
-}
-
-output "s3_kms_key_arn" {
-  description = "S3 KMS key ARN"
-  value       = module.s3.s3_kms_key_arn
-}
-
-output "s3_kms_key_alias_name" {
-  description = "S3 KMS key alias name"
-  value       = module.s3.s3_kms_key_alias_name
 }
 
 output "s3_storage_lens_configuration_id" {
@@ -80,12 +80,12 @@ output "guardduty_stack_set_id" {
 
 output "guardduty_stack_set_instance_ids" {
   description = "GuardDuty StackSet Instance IDs"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : null
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : {}
 }
 
-output "available_regions" {
-  description = "Available regions"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].available_regions : null
+output "guardduty_sns_topic_arn" {
+  description = "GuardDuty SNS topic ARN"
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_sns_topic_arn : null
 }
 
 output "config_configuration_recorder_id" {
@@ -101,6 +101,11 @@ output "config_delivery_channel_id" {
 output "config_iam_role_arn" {
   description = "Config IAM role ARN"
   value       = length(module.config) > 0 ? module.config[0].config_iam_role_arn : null
+}
+
+output "config_sns_topic_arn" {
+  description = "Config SNS topic ARN"
+  value       = length(module.config) > 0 ? module.config[0].config_sns_topic_arn : null
 }
 
 output "config_root_mfa_rule_id" {
@@ -123,14 +128,19 @@ output "budgets_budget_id" {
   value       = length(module.budgets) > 0 ? module.budgets[0].budgets_budget_id : null
 }
 
-output "budgets_sns_topic_id" {
-  description = "Budgets SNS topic ID"
-  value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_id : null
+output "budgets_sns_topic_arn" {
+  description = "Budgets SNS topic ARN"
+  value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_arn : null
 }
 
-output "budgets_sns_topic_kms_key_arn" {
-  description = "Budgets SNS topic KMS key ARN"
-  value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_kms_key_arn : null
+output "chatbot_slack_channel_configuration_id" {
+  description = "Chatbot Slack channel configuration ID"
+  value       = length(module.chatbot) > 0 ? module.chatbot[0].chatbot_slack_channel_configuration_id : null
+}
+
+output "chatbot_iam_role_arn" {
+  description = "Chatbot IAM role ARN"
+  value       = length(module.chatbot) > 0 ? module.chatbot[0].chatbot_iam_role_arn : null
 }
 
 output "ecr_registry_id" {

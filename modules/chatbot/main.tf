@@ -1,0 +1,32 @@
+resource "awscc_chatbot_slack_channel_configuration" "slack" {
+  configuration_name = "${var.system_name}-${var.env_type}-chatbot-slack-channel-configuration"
+  iam_role_arn       = aws_iam_role.slack.arn
+  slack_channel_id   = var.chatbot_slack_channel_id
+  slack_workspace_id = var.chatbot_slack_workspace_id
+  sns_topic_arns     = var.sns_topic_arns
+  logging_level      = "NONE"
+}
+
+resource "aws_iam_role" "slack" {
+  name = "${var.system_name}-${var.env_type}-chatbot-iam-role"
+  path = "/"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ChatbotAssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "management.chatbot.amazonaws.com"
+        }
+        Action = ["sts:AssumeRole"]
+      }
+    ]
+  })
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSResourceExplorerReadOnlyAccess"]
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-chatbot-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
+}

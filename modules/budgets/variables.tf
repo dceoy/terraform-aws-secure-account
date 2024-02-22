@@ -10,20 +10,30 @@ variable "env_type" {
   default     = "plt"
 }
 
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+  default     = null
+}
+
+variable "sns_kms_key_arn" {
+  description = "SNS KMS key ARN"
+  type        = string
+  default     = null
+}
+
 variable "budget_time_unit" {
   description = "Budget time unit"
   type        = string
   default     = "ANNUALLY"
+  validation {
+    condition     = contains(["DAILY", "MONTHLY", "QUARTERLY", "ANNUALLY"], var.budget_time_unit)
+    error_message = "Budget time unit must be one of DAILY, MONTHLY, QUARTERLY, or ANNUALLY"
+  }
 }
 
 variable "budget_limit_amount_in_usd" {
   description = "Budget limit amount in USD"
   type        = number
   default     = 1000
-}
-
-variable "account_id" {
-  description = "AWS account ID"
-  type        = string
-  default     = null
 }

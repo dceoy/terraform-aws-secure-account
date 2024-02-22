@@ -8,7 +8,7 @@ output "guardduty_stack_set_instance_ids" {
   value       = { for i in aws_cloudformation_stack_set_instance.guardduty : i.region => i.id }
 }
 
-output "available_regions" {
-  description = "Available regions"
-  value       = local.available_regions
+output "guardduty_sns_topic_arn" {
+  description = "GuardDuty SNS topic ARN"
+  value       = aws_sns_topic.guardduty.arn
 }

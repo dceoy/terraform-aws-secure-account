@@ -46,6 +46,12 @@ variable "s3_expiration_days" {
   default     = null
 }
 
+variable "guardduty_finding_publishing_frequency" {
+  description = "GuardDuty finding publishing frequency"
+  type        = string
+  default     = "SIX_HOURS"
+}
+
 variable "budget_time_unit" {
   description = "Budget time unit"
   type        = string
@@ -56,6 +62,18 @@ variable "budget_limit_amount_in_usd" {
   description = "Budget limit amount in USD"
   type        = number
   default     = 1000
+}
+
+variable "chatbot_slack_workspace_id" {
+  description = "Chatbot Slack workspace ID"
+  type        = string
+  default     = null
+}
+
+variable "chatbot_slack_channel_id" {
+  description = "Chatbot Slack channel ID"
+  type        = string
+  default     = "awschatbot"
 }
 
 variable "enable_iam_accessanalyzer" {

@@ -20,12 +20,12 @@ output "administrator_iam_role_arn" {
 
 output "administrator_iam_policy_arn" {
   description = "Administrator IAM policy ARN"
-  value       = aws_iam_policy.switch.arn
+  value       = aws_iam_policy.administrator.arn
 }
 
 output "developer_iam_policy_arn" {
   description = "Developer IAM policy ARN"
-  value       = aws_iam_policy.switch.arn
+  value       = aws_iam_policy.developer.arn
 }
 
 output "user_mfa_iam_policy_arn" {
@@ -33,9 +33,19 @@ output "user_mfa_iam_policy_arn" {
   value       = aws_iam_policy.mfa.arn
 }
 
-output "iam_group_arns" {
-  description = "IAM group ARN"
-  value       = values(aws_iam_group.groups)
+output "administrator_iam_group_arn" {
+  description = "Administrator IAM group ARN"
+  value       = aws_iam_group.administrator.arn
+}
+
+output "developer_iam_group_arn" {
+  description = "Developer IAM group ARN"
+  value       = aws_iam_group.developer.arn
+}
+
+output "readonly_iam_group_arn" {
+  description = "Readonly IAM group ARN"
+  value       = aws_iam_group.readonly.arn
 }
 
 output "iam_user_ids" {

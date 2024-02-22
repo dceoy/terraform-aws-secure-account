@@ -22,6 +22,12 @@ variable "account_id" {
   default     = null
 }
 
+variable "s3_kms_key_arn" {
+  description = "S3 KMS key ARN"
+  type        = string
+  default     = null
+}
+
 variable "s3_expiration_days" {
   description = "S3 expiration days"
   type        = number
