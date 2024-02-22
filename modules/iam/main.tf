@@ -110,45 +110,9 @@ resource "aws_iam_role" "administrator" {
   }
 }
 
-# tfsec:ignore:aws-iam-enforce-group-mfa
-resource "aws_iam_group" "administrator" {
-  name = "${var.system_name}-${var.env_type}-account-role-switch-iam-group"
-  path = "/"
-}
-
-resource "aws_iam_group_policy_attachment" "administrator" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/IAMUserChangePassword",
-    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
-    "arn:aws:iam::aws:policy/IAMUserSSHKeys"
-  ])
-  group      = aws_iam_group.administrator.name
-  policy_arn = each.key
-}
-
-# tfsec:ignore:aws-iam-enforce-group-mfa
-resource "aws_iam_group" "readonly" {
-  name = "${var.system_name}-${var.env_type}-read-only-iam-group"
-  path = "/"
-}
-
-resource "aws_iam_group_policy_attachment" "readonly" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/ReadOnlyAccess",
-    "arn:aws:iam::aws:policy/IAMUserChangePassword"
-  ])
-  group      = aws_iam_group.readonly.name
-  policy_arn = each.key
-}
-
-resource "aws_iam_group_policy_attachment" "switch" {
-  group      = aws_iam_group.administrator.name
-  policy_arn = aws_iam_policy.switch.arn
-}
-
-resource "aws_iam_policy" "switch" {
-  name        = "${var.system_name}-${var.env_type}-account-role-switch-iam-policy"
-  description = "Account role switch IAM Policy"
+resource "aws_iam_policy" "administrator" {
+  name        = "${var.system_name}-${var.env_type}-administrator-switch-iam-policy"
+  description = "Administrator switch IAM Policy"
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -158,18 +122,39 @@ resource "aws_iam_policy" "switch" {
         Effect   = "Allow"
         Action   = ["sts:AssumeRole"]
         Resource = ["arn:aws:iam::${local.account_id}:role/*"]
+        Condition = {
+          Bool = {
+            "aws:MultiFactorAuthPresent" = "true"
+          }
+        }
       }
     ]
   })
 }
 
-resource "aws_iam_group_policy_attachment" "mfa" {
-  for_each = toset([
-    aws_iam_group.administrator.name,
-    aws_iam_group.readonly.name
-  ])
-  group      = each.key
-  policy_arn = aws_iam_policy.mfa.arn
+resource "aws_iam_policy" "developer" {
+  name        = "${var.system_name}-${var.env_type}-developer-switch-iam-policy"
+  description = "developer switch IAM Policy"
+  path        = "/"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "UserAssumeAccountRoles"
+        Effect   = "Allow"
+        Action   = ["sts:AssumeRole"]
+        Resource = "arn:aws:iam::${local.account_id}:role/*"
+        Condition = {
+          Bool = {
+            "aws:MultiFactorAuthPresent" = "true"
+          }
+          StringEquals = {
+            "aws:ResourceTag/SwitchAllowedPolicy" = "${var.system_name}-${var.env_type}-developer-switch-iam-policy"
+          }
+        }
+      }
+    ]
+  })
 }
 
 # tfsec:ignore:aws-iam-no-policy-wildcards
@@ -244,8 +229,55 @@ resource "aws_iam_policy" "mfa" {
   }
 }
 
-resource "aws_iam_user" "developer" {
-  for_each      = toset(var.iam_user_names)
+# tfsec:ignore:aws-iam-enforce-group-mfa
+resource "aws_iam_group" "groups" {
+  for_each = local.iam_group_names
+  name     = each.value
+  path     = "/"
+}
+
+resource "aws_iam_group_policy_attachment" "administrator" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/IAMUserChangePassword",
+    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
+    "arn:aws:iam::aws:policy/ReadOnlyAccess",
+    aws_iam_policy.mfa.arn,
+    aws_iam_policy.administrator.arn
+  ])
+  group      = aws_iam_group.administrator.name
+  policy_arn = each.key
+}
+
+resource "aws_iam_group_policy_attachment" "readonly" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/IAMUserChangePassword",
+    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
+    "arn:aws:iam::aws:policy/ReadOnlyAccess",
+    aws_iam_policy.mfa.arn
+  ])
+  group      = aws_iam_group.readonly.name
+  policy_arn = each.key
+}
+
+resource "aws_iam_group_policy_attachment" "developer" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/IAMUserChangePassword",
+    "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials",
+    aws_iam_policy.mfa.arn,
+    aws_iam_policy.developer.arn
+  ])
+  group      = aws_iam_group.developer.name
+  policy_arn = each.key
+}
+
+resource "aws_iam_user" "users" {
+  for_each = toset(
+    concat(
+      var.administrator_iam_user_names,
+      var.developer_iam_user_names,
+      var.readonly_iam_user_names
+    )
+  )
   name          = each.key
   path          = "/"
   force_destroy = true
@@ -256,11 +288,15 @@ resource "aws_iam_user" "developer" {
   }
 }
 
-resource "aws_iam_user_group_membership" "developer" {
-  for_each = aws_iam_user.developer
-  user     = each.value.name
-  groups = [
-    aws_iam_group.administrator.name,
-    aws_iam_group.readonly.name
-  ]
+resource "aws_iam_user_group_membership" "users" {
+  depends_on = [aws_iam_user.users]
+  for_each = toset(
+    concat(
+      [for u in var.administrator_iam_user_names : [u, "administrator"]],
+      [for u in var.developer_iam_user_names : [u, "developer"]],
+      [for u in var.readonly_iam_user_names : [u, "readonly"]]
+    )
+  )
+  user   = each.key[0]
+  groups = [aws_iam_group[each.key[1]].name]
 }

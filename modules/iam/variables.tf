@@ -22,8 +22,20 @@ variable "account_alias" {
   default     = null
 }
 
-variable "iam_user_names" {
-  description = "IAM user names"
+variable "administrator_iam_user_names" {
+  description = "Administrator IAM user names"
+  type        = list(string)
+  default     = []
+}
+
+variable "developer_iam_user_names" {
+  description = "Developer IAM user names"
+  type        = list(string)
+  default     = []
+}
+
+variable "readonly_iam_user_names" {
+  description = "Readonly IAM user names"
   type        = list(string)
   default     = []
 }

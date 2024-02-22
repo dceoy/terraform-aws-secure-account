@@ -1,11 +1,13 @@
 module "iam" {
-  source                    = "../../modules/iam"
-  system_name               = var.system_name
-  env_type                  = var.env_type
-  account_id                = local.account_id
-  account_alias             = var.account_alias
-  iam_user_names            = var.iam_user_names
-  enable_iam_accessanalyzer = var.enable_iam_accessanalyzer
+  source                       = "../../modules/iam"
+  system_name                  = var.system_name
+  env_type                     = var.env_type
+  account_id                   = local.account_id
+  account_alias                = var.account_alias
+  administrator_iam_user_names = var.administrator_iam_user_names
+  developer_iam_user_names     = var.developer_iam_user_names
+  readonly_iam_user_names      = var.readonly_iam_user_names
+  enable_iam_accessanalyzer    = var.enable_iam_accessanalyzer
 }
 
 module "s3" {

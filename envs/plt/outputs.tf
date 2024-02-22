@@ -18,24 +18,24 @@ output "administrator_iam_role_arn" {
   value       = module.iam.administrator_iam_role_arn
 }
 
-output "account_role_switch_iam_group_arn" {
-  description = "Account role switch IAM group ARN"
-  value       = module.iam.account_role_switch_iam_group_arn
+output "administrator_iam_policy_arn" {
+  description = "Administrator IAM policy ARN"
+  value       = module.iam.administrator_iam_policy_arn
 }
 
-output "readonly_iam_group_arn" {
-  description = "Read-only IAM group ARN"
-  value       = module.iam.readonly_iam_group_arn
-}
-
-output "account_role_switch_iam_policy_arn" {
-  description = "Account role switch IAM policy ARN"
-  value       = module.iam.account_role_switch_iam_policy_arn
+output "developer_iam_policy_arn" {
+  description = "Developer IAM policy ARN"
+  value       = module.iam.developer_iam_policy_arn
 }
 
 output "user_mfa_iam_policy_arn" {
   description = "User MFA IAM policy ARN"
   value       = module.iam.user_mfa_iam_policy_arn
+}
+
+output "iam_group_arns" {
+  description = "IAM group ARN"
+  value       = module.iam.iam_group_arns
 }
 
 output "iam_user_ids" {
