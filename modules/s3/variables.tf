@@ -34,6 +34,12 @@ variable "s3_expiration_days" {
   default     = null
 }
 
+variable "enable_s3_server_access_logging" {
+  description = "Enable S3 server access logging"
+  type        = bool
+  default     = true
+}
+
 variable "enable_s3_storage_lens" {
   description = "Enable S3 Storage Lens"
   type        = bool

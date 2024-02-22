@@ -22,14 +22,15 @@ module "kms" {
 }
 
 module "s3" {
-  source                 = "../../modules/s3"
-  system_name            = var.system_name
-  env_type               = var.env_type
-  account_id             = local.account_id
-  region                 = var.region
-  s3_kms_key_arn         = module.kms.s3_kms_key_arn
-  s3_expiration_days     = var.s3_expiration_days
-  enable_s3_storage_lens = var.enable_s3_storage_lens
+  source                          = "../../modules/s3"
+  system_name                     = var.system_name
+  env_type                        = var.env_type
+  account_id                      = local.account_id
+  region                          = var.region
+  s3_kms_key_arn                  = module.kms.s3_kms_key_arn
+  s3_expiration_days              = var.s3_expiration_days
+  enable_s3_server_access_logging = var.enable_s3_server_access_logging
+  enable_s3_storage_lens          = var.enable_s3_storage_lens
 }
 
 module "cloudtrail" {
@@ -81,7 +82,11 @@ module "budgets" {
 }
 
 module "chatbot" {
-  count       = var.chatbot_slack_workspace_id != null && var.chatbot_slack_channel_id != null ? 1 : 0
+  count = (
+    var.chatbot_slack_workspace_id != null
+    && var.chatbot_slack_channel_id != null
+    && (var.enable_guardduty || var.enable_config || var.enable_budgets)
+  ) ? 1 : 0
   source      = "../../modules/chatbot"
   system_name = var.system_name
   env_type    = var.env_type

@@ -58,9 +58,9 @@ output "s3_base_s3_bucket_id" {
   value       = module.s3.s3_base_s3_bucket_id
 }
 
-output "s3_accesslog_s3_bucket_id" {
-  description = "S3 accesslog S3 bucket ID"
-  value       = module.s3.s3_accesslog_s3_bucket_id
+output "s3_log_s3_bucket_id" {
+  description = "S3 log S3 bucket ID"
+  value       = module.s3.s3_log_s3_bucket_id
 }
 
 output "s3_storage_lens_configuration_id" {
@@ -80,7 +80,7 @@ output "guardduty_stack_set_id" {
 
 output "guardduty_stack_set_instance_ids" {
   description = "GuardDuty StackSet Instance IDs"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : {}
+  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : null
 }
 
 output "guardduty_sns_topic_arn" {

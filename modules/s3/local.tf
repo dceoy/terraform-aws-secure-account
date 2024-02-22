@@ -8,6 +8,6 @@ locals {
 }
 
 locals {
-  base_s3_bucket_name      = "${var.system_name}-${var.env_type}-base-${local.region}-${local.account_id}"
-  accesslog_s3_bucket_name = "${var.system_name}-${var.env_type}-accesslog-${local.region}-${local.account_id}"
+  base_s3_bucket_name = "${var.system_name}-${var.env_type}-base-${local.region}-${local.account_id}"
+  log_s3_bucket_name  = "${var.system_name}-${var.env_type}-log-${local.region}-${local.account_id}"
 }

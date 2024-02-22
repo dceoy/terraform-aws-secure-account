@@ -50,5 +50,5 @@ output "readonly_iam_group_arn" {
 
 output "iam_user_ids" {
   description = "IAM user IDs"
-  value       = values(aws_iam_user.users)
+  value       = values(aws_iam_user.users)[*].id
 }

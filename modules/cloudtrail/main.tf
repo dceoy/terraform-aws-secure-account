@@ -1,5 +1,5 @@
 # tfsec:ignore:aws-cloudtrail-ensure-cloudwatch-integration:
-resource "aws_cloudtrail" "base" {
+resource "aws_cloudtrail" "trail" {
   name                          = "${var.system_name}-${var.env_type}-cloudtrail-trail"
   enable_logging                = true
   include_global_service_events = true

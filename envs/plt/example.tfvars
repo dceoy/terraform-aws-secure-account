@@ -12,6 +12,7 @@ budget_limit_amount_in_usd             = 1000
 chatbot_slack_workspace_id             = null
 chatbot_slack_channel_id               = "awschatbot"
 enable_iam_accessanalyzer              = true
+enable_s3_server_access_logging        = true
 enable_s3_storage_lens                 = true
 enable_cloudtrail                      = true
 enable_guardduty                       = true
