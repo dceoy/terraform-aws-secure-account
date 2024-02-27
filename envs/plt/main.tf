@@ -11,14 +11,11 @@ module "iam" {
 }
 
 module "kms" {
-  source           = "../../modules/kms"
-  system_name      = var.system_name
-  env_type         = var.env_type
-  account_id       = local.account_id
-  region           = var.region
-  enable_guardduty = var.enable_guardduty
-  enable_config    = var.enable_config
-  enable_budgets   = var.enable_budgets
+  source      = "../../modules/kms"
+  system_name = var.system_name
+  env_type    = var.env_type
+  account_id  = local.account_id
+  region      = var.region
 }
 
 module "s3" {
@@ -27,7 +24,7 @@ module "s3" {
   env_type                        = var.env_type
   account_id                      = local.account_id
   region                          = var.region
-  s3_kms_key_arn                  = module.kms.s3_kms_key_arn
+  s3_kms_key_arn                  = module.kms.kms_key_arn
   s3_expiration_days              = var.s3_expiration_days
   enable_s3_server_access_logging = var.enable_s3_server_access_logging
   enable_s3_storage_lens          = var.enable_s3_storage_lens
@@ -39,7 +36,7 @@ module "cloudtrail" {
   system_name    = var.system_name
   env_type       = var.env_type
   s3_bucket_id   = module.s3.s3_base_s3_bucket_id
-  s3_kms_key_arn = module.kms.s3_kms_key_arn
+  s3_kms_key_arn = module.kms.kms_key_arn
 }
 
 module "guardduty" {
@@ -50,7 +47,7 @@ module "guardduty" {
   account_id                                          = local.account_id
   cloudformation_stackset_administration_iam_role_arn = module.iam.cloudformation_stackset_administration_iam_role_arn
   cloudformation_stackset_execution_iam_role_arn      = module.iam.cloudformation_stackset_execution_iam_role_arn
-  sns_kms_key_arn                                     = module.kms.sns_kms_key_arn
+  sns_kms_key_arn                                     = module.kms.kms_key_arn
   guardduty_finding_publishing_frequency              = var.guardduty_finding_publishing_frequency
 }
 
@@ -61,8 +58,8 @@ module "config" {
   env_type                             = var.env_type
   account_id                           = local.account_id
   s3_bucket_id                         = module.s3.s3_base_s3_bucket_id
-  s3_kms_key_arn                       = module.kms.s3_kms_key_arn
-  sns_kms_key_arn                      = module.kms.sns_kms_key_arn
+  s3_kms_key_arn                       = module.kms.kms_key_arn
+  sns_kms_key_arn                      = module.kms.kms_key_arn
   allow_non_console_access_without_mfa = false
 }
 

@@ -21,21 +21,3 @@ variable "account_id" {
   type        = string
   default     = null
 }
-
-variable "enable_guardduty" {
-  description = "Enable GuardDuty"
-  type        = bool
-  default     = true
-}
-
-variable "enable_config" {
-  description = "Enable Config"
-  type        = bool
-  default     = true
-}
-
-variable "enable_budgets" {
-  description = "Enable Budgets"
-  type        = bool
-  default     = true
-}

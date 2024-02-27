@@ -53,6 +53,16 @@ output "iam_user_ids" {
   value       = module.iam.iam_user_ids
 }
 
+output "kms_key_arn" {
+  description = "KMS key ARN"
+  value       = module.kms.kms_key_arn
+}
+
+output "kms_key_alias_name" {
+  description = "KMS key alias name"
+  value       = module.kms.kms_key_alias_name
+}
+
 output "s3_base_s3_bucket_id" {
   description = "S3 base S3 bucket ID"
   value       = module.s3.s3_base_s3_bucket_id
