@@ -66,13 +66,24 @@ resource "aws_iam_role" "config" {
           Sid    = "ConfigEncryptAndDecryptS3Objects"
           Effect = "Allow"
           Action = [
-            "kms:GenerateDataKey",
-            "kms:Decrypt"
+            "kms:Decrypt",
+            "kms:GenerateDataKey"
           ]
           Resource = var.s3_kms_key_arn
           Condition = {
             StringEquals = {
               "AWS:SourceAccount" = local.account_id
+            }
+          }
+        },
+        {
+          Sid      = "ConfigPublishSNSMessages"
+          Effect   = "Allow"
+          Action   = ["sns:Publish"]
+          Resource = [aws_sns_topic.config.arn]
+          Condition = {
+            StringEquals = {
+              "aws:SourceAccount" = local.account_id
             }
           }
         }

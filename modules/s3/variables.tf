@@ -10,18 +10,6 @@ variable "env_type" {
   default     = "plt"
 }
 
-variable "region" {
-  description = "AWS region"
-  type        = string
-  default     = null
-}
-
-variable "account_id" {
-  description = "AWS account ID"
-  type        = string
-  default     = null
-}
-
 variable "s3_kms_key_arn" {
   description = "S3 KMS key ARN"
   type        = string

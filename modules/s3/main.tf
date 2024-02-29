@@ -143,7 +143,7 @@ resource "aws_s3_bucket_policy" "base" {
         Resource = aws_s3_bucket.base.arn
         Condition = {
           ArnLike = {
-            "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "aws:SourceArn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
           }
         }
       },
@@ -160,7 +160,7 @@ resource "aws_s3_bucket_policy" "base" {
             "s3:x-amz-acl" = "bucket-owner-full-control"
           }
           ArnLike = {
-            "aws:SourceArn" = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "aws:SourceArn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
           }
         }
       },

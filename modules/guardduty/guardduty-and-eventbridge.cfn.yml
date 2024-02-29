@@ -35,10 +35,10 @@ Resources:
           Value: !Ref SystemName
         - Key: EnvType
           Value: !Ref EnvType
-  EventRule:
+  EventBridge:
     Type: AWS::Events::Rule
     Properties:
-      Name: !Sub ${SystemName}-${EnvType}-guardduty-event-rule
+      Name: !Sub ${SystemName}-${EnvType}-guardduty-eventbridge
       EventPattern:
         source:
           - aws.guardduty
@@ -57,7 +57,7 @@ Outputs:
     Value: !Ref GuardDutyDetector
     Export:
       Name: !Sub ${AWS::Region}-${AWS::StackName}-GuardDutyDetector
-  EventRule:
-    Value: !Ref EventRule
+  EventBridge:
+    Value: !Ref EventBridge
     Export:
-      Name: !Sub ${AWS::Region}-${AWS::StackName}-EventRule
+      Name: !Sub ${AWS::Region}-${AWS::StackName}-EventBridge

@@ -10,12 +10,6 @@ variable "env_type" {
   default     = "plt"
 }
 
-variable "account_id" {
-  description = "AWS account ID"
-  type        = string
-  default     = null
-}
-
 variable "cloudformation_stackset_administration_iam_role_arn" {
   description = "CloudFormation StackSet Administration IAM Role ARN"
   type        = string

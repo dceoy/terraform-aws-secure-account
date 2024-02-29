@@ -10,12 +10,6 @@ variable "env_type" {
   default     = "plt"
 }
 
-variable "account_id" {
-  description = "AWS account ID"
-  type        = string
-  default     = null
-}
-
 variable "sns_kms_key_arn" {
   description = "SNS KMS key ARN"
   type        = string

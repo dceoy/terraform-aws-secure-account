@@ -7,8 +7,8 @@ resource "aws_cloudformation_stack_set" "guardduty" {
   parameters = {
     SystemName                 = var.system_name
     EnvType                    = var.env_type
-    FindingPublishingFrequency = var.guardduty_finding_publishing_frequency
     SnsTopicArn                = aws_sns_topic.guardduty.arn
+    FindingPublishingFrequency = var.guardduty_finding_publishing_frequency
   }
   template_body = file("${path.module}/guardduty-and-eventbridge.cfn.yml")
   operation_preferences {

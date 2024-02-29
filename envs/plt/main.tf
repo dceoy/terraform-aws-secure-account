@@ -2,7 +2,6 @@ module "iam" {
   source                       = "../../modules/iam"
   system_name                  = var.system_name
   env_type                     = var.env_type
-  account_id                   = local.account_id
   account_alias                = var.account_alias
   administrator_iam_user_names = var.administrator_iam_user_names
   developer_iam_user_names     = var.developer_iam_user_names
@@ -14,16 +13,12 @@ module "kms" {
   source      = "../../modules/kms"
   system_name = var.system_name
   env_type    = var.env_type
-  account_id  = local.account_id
-  region      = var.region
 }
 
 module "s3" {
   source                          = "../../modules/s3"
   system_name                     = var.system_name
   env_type                        = var.env_type
-  account_id                      = local.account_id
-  region                          = var.region
   s3_kms_key_arn                  = module.kms.kms_key_arn
   s3_expiration_days              = var.s3_expiration_days
   enable_s3_server_access_logging = var.enable_s3_server_access_logging
@@ -44,7 +39,6 @@ module "guardduty" {
   source                                              = "../../modules/guardduty"
   system_name                                         = var.system_name
   env_type                                            = var.env_type
-  account_id                                          = local.account_id
   cloudformation_stackset_administration_iam_role_arn = module.iam.cloudformation_stackset_administration_iam_role_arn
   cloudformation_stackset_execution_iam_role_arn      = module.iam.cloudformation_stackset_execution_iam_role_arn
   sns_kms_key_arn                                     = module.kms.kms_key_arn
@@ -56,7 +50,6 @@ module "config" {
   source                               = "../../modules/config"
   system_name                          = var.system_name
   env_type                             = var.env_type
-  account_id                           = local.account_id
   s3_bucket_id                         = module.s3.s3_base_s3_bucket_id
   s3_kms_key_arn                       = module.kms.kms_key_arn
   sns_kms_key_arn                      = module.kms.kms_key_arn
@@ -73,7 +66,7 @@ module "budgets" {
   source                     = "../../modules/budgets"
   system_name                = var.system_name
   env_type                   = var.env_type
-  account_id                 = local.account_id
+  sns_kms_key_arn            = module.kms.kms_key_arn
   budget_time_unit           = var.budget_time_unit
   budget_limit_amount_in_usd = var.budget_limit_amount_in_usd
 }

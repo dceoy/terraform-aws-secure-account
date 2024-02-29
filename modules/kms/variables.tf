@@ -9,15 +9,3 @@ variable "env_type" {
   type        = string
   default     = "plt"
 }
-
-variable "region" {
-  description = "AWS region"
-  type        = string
-  default     = null
-}
-
-variable "account_id" {
-  description = "AWS account ID"
-  type        = string
-  default     = null
-}

@@ -26,8 +26,10 @@ resource "aws_kms_key" "custom" {
         ]
         Resource = "*"
         Condition = {
+          StringLike = {
+            "kms:ViaService" = "s3.*.amazonaws.com"
+          }
           StringEquals = {
-            "kms:ViaService"    = "s3.${local.region}.amazonaws.com"
             "kms:CallerAccount" = local.account_id
           }
         }
@@ -37,14 +39,14 @@ resource "aws_kms_key" "custom" {
         Effect = "Allow"
         Principal = {
           Service = [
-            "guardduty.amazonaws.com",
+            "events.amazonaws.com",
             "config.amazonaws.com",
             "budgets.amazonaws.com"
           ]
         }
         Action = [
-          "kms:GenerateDataKey*",
-          "kms:Decrypt"
+          "kms:Decrypt",
+          "kms:GenerateDataKey*"
         ]
         Resource = "*"
         Condition = {
@@ -52,7 +54,11 @@ resource "aws_kms_key" "custom" {
             "aws:SourceAccount" = local.account_id
           }
           ArnLike = {
-            "aws:SourceArn" = "arn:aws:events:*:${local.account_id}:*"
+            "aws:SourceArn" = [
+              "arn:aws:events:*:${local.account_id}:*",
+              "arn:aws:config:*:${local.account_id}:*",
+              "arn:aws:budgets::${local.account_id}:*"
+            ]
           }
         }
       },
@@ -66,7 +72,7 @@ resource "aws_kms_key" "custom" {
         Resource = "*"
         Condition = {
           ArnLike = {
-            "aws:SourceArn"                            = "arn:aws:cloudtrail:${local.region}:${local.account_id}:trail/*"
+            "aws:SourceArn"                            = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
             "kms:EncryptionContext:aws:cloudtrail:arn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
           }
         }
@@ -78,8 +84,8 @@ resource "aws_kms_key" "custom" {
           Service = "config.amazonaws.com"
         }
         Action = [
-          "kms:GenerateDataKey",
-          "kms:Decrypt"
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
         ]
         Resource = "*"
         Condition = {

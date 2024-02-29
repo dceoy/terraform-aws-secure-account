@@ -5,7 +5,7 @@ data "aws_regions" "available" {
 }
 
 locals {
-  account_id        = var.account_id != null ? var.account_id : data.aws_caller_identity.current.account_id
+  account_id        = data.aws_caller_identity.current.account_id
   available_regions = data.aws_regions.available.names
 }
 
