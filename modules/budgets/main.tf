@@ -10,11 +10,11 @@ resource "aws_budgets_budget" "cost" {
     comparison_operator       = "GREATER_THAN"
     threshold                 = 100
     threshold_type            = "PERCENTAGE"
-    subscriber_sns_topic_arns = [aws_sns_topic.cost.arn]
+    subscriber_sns_topic_arns = [aws_sns_topic.budgets.arn]
   }
 }
 
-resource "aws_sns_topic" "cost" {
+resource "aws_sns_topic" "budgets" {
   name              = "${var.system_name}-${var.env_type}-budgets-sns-topic"
   display_name      = "${var.system_name}-${var.env_type}-budgets-sns-topic"
   kms_master_key_id = var.sns_kms_key_arn
@@ -25,11 +25,11 @@ resource "aws_sns_topic" "cost" {
   }
 }
 
-resource "aws_sns_topic_policy" "cost" {
-  arn = aws_sns_topic.cost.arn
+resource "aws_sns_topic_policy" "budgets" {
+  arn = aws_sns_topic.budgets.arn
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "${aws_sns_topic.cost.name}-policy"
+    Id      = "${aws_sns_topic.budgets.name}-policy"
     Statement = [
       {
         Sid    = "BudgetsPublishSNSMessages"
@@ -38,7 +38,7 @@ resource "aws_sns_topic_policy" "cost" {
           Service = "budgets.amazonaws.com"
         }
         Action   = ["sns:Publish"]
-        Resource = [aws_sns_topic.cost.arn]
+        Resource = [aws_sns_topic.budgets.arn]
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = local.account_id

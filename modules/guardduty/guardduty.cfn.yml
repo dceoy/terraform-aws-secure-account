@@ -1,15 +1,12 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
-Description: GuardDuty and EventBridge
+Description: GuardDuty Detector
 Parameters:
   SystemName:
     Description: Set the system name.
     Type: String
   EnvType:
     Description: Set the environment type.
-    Type: String
-  SnsTopicArn:
-    Description: Set the SNS topic ARN.
     Type: String
   FindingPublishingFrequency:
     Description: Set the finding publishing frequency.
@@ -28,6 +25,9 @@ Resources:
       DataSources:
         S3Logs:
           Enable: true
+        MalwareProtection:
+          ScanEc2InstanceWithFindings:
+            EbsVolumes: true
       Tags:
         - Key: Name
           Value: !Sub ${SystemName}-${EnvType}-guardduty-detector
@@ -35,29 +35,8 @@ Resources:
           Value: !Ref SystemName
         - Key: EnvType
           Value: !Ref EnvType
-  EventBridge:
-    Type: AWS::Events::Rule
-    Properties:
-      Name: !Sub ${SystemName}-${EnvType}-guardduty-eventbridge
-      EventPattern:
-        source:
-          - aws.guardduty
-        detail-type:
-          - GuardDuty Finding
-      Targets:
-        - Arn: !Ref SnsTopicArn
-          Id:
-            Fn::Select:
-              - 5
-              - Fn::Split:
-                  - ':'
-                  - !Ref SnsTopicArn
 Outputs:
   GuardDutyDetector:
     Value: !Ref GuardDutyDetector
     Export:
       Name: !Sub ${AWS::Region}-${AWS::StackName}-GuardDutyDetector
-  EventBridge:
-    Value: !Ref EventBridge
-    Export:
-      Name: !Sub ${AWS::Region}-${AWS::StackName}-EventBridge

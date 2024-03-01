@@ -93,11 +93,6 @@ output "guardduty_stack_set_instance_ids" {
   value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_stack_set_instance_ids : null
 }
 
-output "guardduty_sns_topic_arn" {
-  description = "GuardDuty SNS topic ARN"
-  value       = length(module.guardduty) > 0 ? module.guardduty[0].guardduty_sns_topic_arn : null
-}
-
 output "config_configuration_recorder_id" {
   description = "Config configuration recorder ID"
   value       = length(module.config) > 0 ? module.config[0].config_configuration_recorder_id : null
@@ -113,11 +108,6 @@ output "config_iam_role_arn" {
   value       = length(module.config) > 0 ? module.config[0].config_iam_role_arn : null
 }
 
-output "config_sns_topic_arn" {
-  description = "Config SNS topic ARN"
-  value       = length(module.config) > 0 ? module.config[0].config_sns_topic_arn : null
-}
-
 output "config_root_mfa_rule_id" {
   description = "Config root MFA rule ID"
   value       = length(module.config) > 0 ? module.config[0].config_root_mfa_rule_id : null
@@ -131,6 +121,16 @@ output "config_user_mfa_rule_id" {
 output "securityhub_id" {
   description = "Security Hub ID"
   value       = length(module.securityhub) > 0 ? module.securityhub[0].securityhub_id : null
+}
+
+output "securityhub_event_rule_id" {
+  description = "Security Hub Event Rule ID"
+  value       = length(module.securityhub) > 0 ? module.securityhub[0].securityhub_event_rule_id : null
+}
+
+output "securityhub_sns_topic_arn" {
+  description = "Security Hub SNS Topic ARN"
+  value       = length(module.securityhub) > 0 ? module.securityhub[0].securityhub_sns_topic_arn : null
 }
 
 output "budgets_budget_id" {

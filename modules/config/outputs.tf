@@ -13,11 +13,6 @@ output "config_iam_role_arn" {
   value       = aws_iam_role.config.arn
 }
 
-output "config_sns_topic_arn" {
-  description = "Config SNS topic ARN"
-  value       = aws_sns_topic.config.arn
-}
-
 output "config_root_mfa_rule_id" {
   description = "Config root MFA rule ID"
   value       = aws_config_config_rule.root_mfa.id

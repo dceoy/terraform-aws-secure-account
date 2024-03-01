@@ -22,12 +22,6 @@ variable "cloudformation_stackset_execution_iam_role_arn" {
   default     = null
 }
 
-variable "sns_kms_key_arn" {
-  description = "SNS KMS key ARN"
-  type        = string
-  default     = null
-}
-
 variable "guardduty_finding_publishing_frequency" {
   description = "GuardDuty finding publishing frequency"
   type        = string

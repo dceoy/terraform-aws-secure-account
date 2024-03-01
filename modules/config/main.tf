@@ -13,14 +13,20 @@ resource "aws_config_delivery_channel" "config" {
   s3_bucket_name = var.s3_bucket_id
   s3_key_prefix  = var.config_s3_key_prefix
   s3_kms_key_arn = var.s3_kms_key_arn
-  sns_topic_arn  = aws_sns_topic.config.arn
   snapshot_delivery_properties {
     delivery_frequency = "One_Hour"
   }
 }
 
+resource "aws_config_configuration_recorder_status" "config" {
+  depends_on = [aws_config_delivery_channel.config]
+  name       = aws_config_configuration_recorder.config.name
+  is_enabled = true
+}
+
 resource "aws_iam_role" "config" {
   name = "${var.system_name}-${var.env_type}-config-iam-role"
+  path = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -75,59 +81,10 @@ resource "aws_iam_role" "config" {
               "AWS:SourceAccount" = local.account_id
             }
           }
-        },
-        {
-          Sid      = "ConfigPublishSNSMessages"
-          Effect   = "Allow"
-          Action   = ["sns:Publish"]
-          Resource = [aws_sns_topic.config.arn]
-          Condition = {
-            StringEquals = {
-              "aws:SourceAccount" = local.account_id
-            }
-          }
         }
       ]
     })
   }
-}
-
-resource "aws_sns_topic" "config" {
-  name              = "${var.system_name}-${var.env_type}-config-sns-topic"
-  display_name      = "${var.system_name}-${var.env_type}-config-sns-topic"
-  kms_master_key_id = var.sns_kms_key_arn
-  tags = {
-    Name       = "${var.system_name}-${var.env_type}-config-sns-topic"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
-}
-
-resource "aws_sns_topic_policy" "config" {
-  arn = aws_sns_topic.config.arn
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Id      = "${aws_sns_topic.config.name}-policy"
-    Statement = [
-      {
-        Sid    = "ConfigPublishSNSMessages"
-        Effect = "Allow"
-        Principal = {
-          Service = "config.amazonaws.com"
-        }
-        Action   = ["sns:Publish"]
-        Resource = [aws_sns_topic.config.arn]
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = local.account_id
-          }
-          ArnLike = {
-            "aws:SourceArn" = "arn:aws:config:*:${local.account_id}:*"
-          }
-        }
-      }
-    ]
-  })
 }
 
 resource "aws_config_config_rule" "root_mfa" {

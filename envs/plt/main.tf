@@ -41,7 +41,6 @@ module "guardduty" {
   env_type                                            = var.env_type
   cloudformation_stackset_administration_iam_role_arn = module.iam.cloudformation_stackset_administration_iam_role_arn
   cloudformation_stackset_execution_iam_role_arn      = module.iam.cloudformation_stackset_execution_iam_role_arn
-  sns_kms_key_arn                                     = module.kms.kms_key_arn
   guardduty_finding_publishing_frequency              = var.guardduty_finding_publishing_frequency
 }
 
@@ -52,13 +51,16 @@ module "config" {
   env_type                             = var.env_type
   s3_bucket_id                         = module.s3.s3_base_s3_bucket_id
   s3_kms_key_arn                       = module.kms.kms_key_arn
-  sns_kms_key_arn                      = module.kms.kms_key_arn
   allow_non_console_access_without_mfa = false
 }
 
 module "securityhub" {
-  count  = var.enable_securityhub ? 1 : 0
-  source = "../../modules/securityhub"
+  depends_on      = [module.guardduty, module.config]
+  count           = var.enable_securityhub ? 1 : 0
+  source          = "../../modules/securityhub"
+  system_name     = var.system_name
+  env_type        = var.env_type
+  sns_kms_key_arn = module.kms.kms_key_arn
 }
 
 module "budgets" {
@@ -75,14 +77,13 @@ module "chatbot" {
   count = (
     var.chatbot_slack_workspace_id != null
     && var.chatbot_slack_channel_id != null
-    && (var.enable_guardduty || var.enable_config || var.enable_budgets)
+    && (var.enable_securityhub || var.enable_budgets)
   ) ? 1 : 0
   source      = "../../modules/chatbot"
   system_name = var.system_name
   env_type    = var.env_type
   sns_topic_arns = compact([
-    length(module.guardduty) > 0 ? module.guardduty[0].guardduty_sns_topic_arn : null,
-    length(module.config) > 0 ? module.config[0].config_sns_topic_arn : null,
+    length(module.securityhub) > 0 ? module.securityhub[0].securityhub_sns_topic_arn : null,
     length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_arn : null
   ])
   chatbot_slack_workspace_id = var.chatbot_slack_workspace_id

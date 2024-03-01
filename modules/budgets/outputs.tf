@@ -5,5 +5,5 @@ output "budgets_budget_id" {
 
 output "budgets_sns_topic_arn" {
   description = "Budgets SNS topic ARN"
-  value       = aws_sns_topic.cost.arn
+  value       = aws_sns_topic.budgets.arn
 }

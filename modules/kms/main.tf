@@ -26,39 +26,11 @@ resource "aws_kms_key" "custom" {
         ]
         Resource = "*"
         Condition = {
-          StringLike = {
-            "kms:ViaService" = "s3.*.amazonaws.com"
-          }
           StringEquals = {
             "kms:CallerAccount" = local.account_id
           }
-        }
-      },
-      {
-        Sid    = "EventsEncryptAndDecryptSNSMessages"
-        Effect = "Allow"
-        Principal = {
-          Service = [
-            "events.amazonaws.com",
-            "config.amazonaws.com",
-            "budgets.amazonaws.com"
-          ]
-        }
-        Action = [
-          "kms:Decrypt",
-          "kms:GenerateDataKey*"
-        ]
-        Resource = "*"
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = local.account_id
-          }
-          ArnLike = {
-            "aws:SourceArn" = [
-              "arn:aws:events:*:${local.account_id}:*",
-              "arn:aws:config:*:${local.account_id}:*",
-              "arn:aws:budgets::${local.account_id}:*"
-            ]
+          StringLike = {
+            "kms:ViaService" = "s3.*.amazonaws.com"
           }
         }
       },
@@ -91,6 +63,46 @@ resource "aws_kms_key" "custom" {
         Condition = {
           StringEquals = {
             "AWS:SourceAccount" = local.account_id
+          }
+        }
+      },
+      {
+        Sid    = "EventsEncryptAndDecryptGuardDutyFindings"
+        Effect = "Allow"
+        Principal = {
+          Service = "events.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey*"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = local.account_id
+          }
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:events:*:${local.account_id}:*"
+          }
+        }
+      },
+      {
+        Sid    = "BudgetsEncryptAndDecryptBudgetsNotifications"
+        Effect = "Allow"
+        Principal = {
+          Service = "budgets.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey*"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = local.account_id
+          }
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:budgets::${local.account_id}:*"
           }
         }
       }

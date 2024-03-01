@@ -22,12 +22,6 @@ variable "s3_kms_key_arn" {
   default     = null
 }
 
-variable "sns_kms_key_arn" {
-  description = "SNS KMS key ARN"
-  type        = string
-  default     = null
-}
-
 variable "allow_non_console_access_without_mfa" {
   description = "Allow non-console access without MFA"
   type        = bool
