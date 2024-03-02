@@ -9,14 +9,24 @@ resource "aws_securityhub_finding_aggregator" "standard" {
   linking_mode = "ALL_REGIONS"
 }
 
-resource "aws_iam_service_linked_role" "standard" {
-  aws_service_name = "config.amazonaws.com"
-}
-
 resource "aws_securityhub_standards_subscription" "standard" {
   depends_on    = [aws_securityhub_account.standard]
-  for_each      = local.securityhub_standard_arns
-  standards_arn = each.value
+  for_each      = toset(var.securityhub_subscribed_standards)
+  standards_arn = "arn:aws:securityhub:${local.region}::standards/${each.key}"
+}
+
+resource "aws_securityhub_product_subscription" "standard" {
+  depends_on  = [aws_securityhub_account.standard]
+  for_each    = toset(var.securityhub_subscribed_products)
+  product_arn = "arn:aws:securityhub:${local.region}::product/${each.key}"
+}
+
+resource "aws_securityhub_standards_control" "standard" {
+  depends_on            = [aws_securityhub_account.standard]
+  for_each              = var.securityhub_disabled_standards_controls
+  control_status        = "DISABLED"
+  standards_control_arn = "arn:aws:securityhub:${local.region}:${local.account_id}:control/${each.key}"
+  disabled_reason       = each.value
 }
 
 resource "aws_cloudwatch_event_rule" "securityhub" {
@@ -27,15 +37,15 @@ resource "aws_cloudwatch_event_rule" "securityhub" {
   event_pattern = jsonencode({
     source      = ["aws.securityhub"]
     detail_type = ["Security Hub Findings - Imported"]
-    detail = {
-      findings = {
-        ProductName = ["GuardDuty"]
-        Workflow = {
-          Status = ["NEW"]
-        }
-        RecordState = ["ACTIVE"]
-      }
-    }
+    # detail = {
+    #   findings = {
+    #     ProductName = ["GuardDuty"]
+    #     Workflow = {
+    #       Status = ["NEW"]
+    #     }
+    #     RecordState = ["ACTIVE"]
+    #   }
+    # }
   })
   tags = {
     Name       = "${var.system_name}-${var.env_type}-securityhub-sns-event-rule"

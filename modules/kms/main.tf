@@ -77,14 +77,6 @@ resource "aws_kms_key" "custom" {
           "kms:GenerateDataKey*"
         ]
         Resource = "*"
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = local.account_id
-          }
-          ArnLike = {
-            "aws:SourceArn" = "arn:aws:events:*:${local.account_id}:*"
-          }
-        }
       },
       {
         Sid    = "BudgetsEncryptAndDecryptBudgetsNotifications"
