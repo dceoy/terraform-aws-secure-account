@@ -37,15 +37,15 @@ resource "aws_cloudwatch_event_rule" "securityhub" {
   event_pattern = jsonencode({
     source      = ["aws.securityhub"]
     detail_type = ["Security Hub Findings - Imported"]
-    # detail = {
-    #   findings = {
-    #     ProductName = ["GuardDuty"]
-    #     Workflow = {
-    #       Status = ["NEW"]
-    #     }
-    #     RecordState = ["ACTIVE"]
-    #   }
-    # }
+    detail = {
+      findings = {
+        ProductName = ["GuardDuty"]
+        Workflow = {
+          Status = ["NEW"]
+        }
+        RecordState = ["ACTIVE"]
+      }
+    }
   })
   tags = {
     Name       = "${var.system_name}-${var.env_type}-securityhub-sns-event-rule"

@@ -7,15 +7,27 @@ developer_iam_user_names               = []
 readonly_iam_user_names                = []
 s3_expiration_days                     = null
 guardduty_finding_publishing_frequency = "SIX_HOURS"
-budget_time_unit                       = "ANNUALLY"
-budget_limit_amount_in_usd             = 1000
-chatbot_slack_workspace_id             = null
-chatbot_slack_channel_id               = "awschatbot"
-enable_iam_accessanalyzer              = true
-enable_s3_server_access_logging        = true
-enable_s3_storage_lens                 = true
-enable_cloudtrail                      = true
-enable_guardduty                       = true
-enable_config                          = true
-enable_securityhub                     = true
-enable_budgets                         = true
+securityhub_subscribed_standards = [
+  "aws-foundational-security-best-practices/v/1.0.0",
+  "cis-aws-foundations-benchmark/v/1.4.0"
+]
+securityhub_subscribed_products = [
+  "aws/guardduty",
+  "aws/inspector",
+  "aws/macie"
+]
+securityhub_disabled_standards_controls = {
+  "cis-aws-foundations-benchmark/v/1.4.0/1.14" = "Make access key rotation optional."
+}
+budget_time_unit                = "ANNUALLY"
+budget_limit_amount_in_usd      = 1000
+chatbot_slack_workspace_id      = null
+chatbot_slack_channel_id        = "awschatbot"
+enable_iam_accessanalyzer       = true
+enable_s3_server_access_logging = true
+enable_s3_storage_lens          = true
+enable_cloudtrail               = true
+enable_guardduty                = true
+enable_config                   = true
+enable_securityhub              = true
+enable_budgets                  = true

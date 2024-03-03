@@ -55,12 +55,15 @@ module "config" {
 }
 
 module "securityhub" {
-  depends_on      = [module.guardduty, module.config]
-  count           = var.enable_securityhub ? 1 : 0
-  source          = "../../modules/securityhub"
-  system_name     = var.system_name
-  env_type        = var.env_type
-  sns_kms_key_arn = module.kms.kms_key_arn
+  depends_on                              = [module.guardduty, module.config]
+  count                                   = var.enable_securityhub ? 1 : 0
+  source                                  = "../../modules/securityhub"
+  system_name                             = var.system_name
+  env_type                                = var.env_type
+  sns_kms_key_arn                         = module.kms.kms_key_arn
+  securityhub_subscribed_standards        = var.securityhub_subscribed_standards
+  securityhub_subscribed_products         = var.securityhub_subscribed_products
+  securityhub_disabled_standards_controls = var.securityhub_disabled_standards_controls
 }
 
 module "budgets" {
