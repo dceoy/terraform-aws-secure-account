@@ -306,7 +306,7 @@ resource "aws_iam_user" "users" {
   )
   name          = each.key
   path          = "/"
-  force_destroy = true
+  force_destroy = var.iam_force_destroy
   tags = {
     Name       = each.key
     SystemName = var.system_name

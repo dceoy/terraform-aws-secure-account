@@ -40,6 +40,12 @@ variable "readonly_iam_user_names" {
   default     = []
 }
 
+variable "iam_force_destroy" {
+  description = "IAM force destroy"
+  type        = bool
+  default     = true
+}
+
 variable "enable_iam_accessanalyzer" {
   description = "Enable IAM Access Analyzer"
   type        = bool

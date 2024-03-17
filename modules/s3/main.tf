@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "base" {
   bucket        = local.base_s3_bucket_name
-  force_destroy = true
+  force_destroy = var.s3_force_destroy
   tags = {
     Name       = local.base_s3_bucket_name
     SystemName = var.system_name
@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "base" {
 resource "aws_s3_bucket" "log" {
   count         = var.enable_s3_server_access_logging ? 1 : 0
   bucket        = local.log_s3_bucket_name
-  force_destroy = true
+  force_destroy = var.s3_force_destroy
   tags = {
     Name       = local.log_s3_bucket_name
     SystemName = var.system_name

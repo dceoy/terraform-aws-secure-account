@@ -40,10 +40,22 @@ variable "readonly_iam_user_names" {
   default     = []
 }
 
+variable "iam_force_destroy" {
+  description = "IAM force destroy"
+  type        = bool
+  default     = true
+}
+
 variable "s3_expiration_days" {
   description = "S3 expiration days"
   type        = number
   default     = null
+}
+
+variable "s3_force_destroy" {
+  description = "S3 force destroy"
+  type        = bool
+  default     = true
 }
 
 variable "guardduty_finding_publishing_frequency" {

@@ -6,6 +6,7 @@ module "iam" {
   administrator_iam_user_names = var.administrator_iam_user_names
   developer_iam_user_names     = var.developer_iam_user_names
   readonly_iam_user_names      = var.readonly_iam_user_names
+  iam_force_destroy            = var.iam_force_destroy
   enable_iam_accessanalyzer    = var.enable_iam_accessanalyzer
 }
 
@@ -21,6 +22,7 @@ module "s3" {
   env_type                        = var.env_type
   s3_kms_key_arn                  = module.kms.kms_key_arn
   s3_expiration_days              = var.s3_expiration_days
+  s3_force_destroy                = var.s3_force_destroy
   enable_s3_server_access_logging = var.enable_s3_server_access_logging
   enable_s3_storage_lens          = var.enable_s3_storage_lens
 }

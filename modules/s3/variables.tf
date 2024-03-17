@@ -22,6 +22,12 @@ variable "s3_expiration_days" {
   default     = null
 }
 
+variable "s3_force_destroy" {
+  description = "S3 force destroy"
+  type        = bool
+  default     = true
+}
+
 variable "enable_s3_server_access_logging" {
   description = "Enable S3 server access logging"
   type        = bool

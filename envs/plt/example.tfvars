@@ -2,10 +2,13 @@ region                                 = "us-east-1"
 system_name                            = "acc"
 env_type                               = "plt"
 account_alias                          = null
+force_destroy                          = true
 administrator_iam_user_names           = []
 developer_iam_user_names               = []
 readonly_iam_user_names                = []
+iam_force_destroy                      = true
 s3_expiration_days                     = null
+s3_force_destroy                       = true
 guardduty_finding_publishing_frequency = "SIX_HOURS"
 securityhub_subscribed_standards = [
   "aws-foundational-security-best-practices/v/1.0.0",
