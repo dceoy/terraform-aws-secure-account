@@ -25,7 +25,9 @@ Installation
         --template-body file://cloudformation/s3-and-dynamodb-for-terraform.cfn.yml
     ```
 
-4.  Create configuration files.
+4.  Install [Terraform](https://www.terraform.io/).
+
+5.  Create configuration files.
 
     ```sh
     $ cp envs/plt/example.tfbackend envs/plt/aws.tfbackend
@@ -34,19 +36,19 @@ Installation
     $ vi envs/plt/terraform.tfvars  # => edit
     ```
 
-5.  Initialize a new Terraform working directory.
+6.  Initialize a new Terraform working directory.
 
     ```sh
     $ terraform -chdir='envs/plt/' init -upgrade -reconfigure -backend-config='./aws.tfbackend'
     ```
 
-6.  Generates a speculative execution plan. (Optional)
+7.  Generates a speculative execution plan. (Optional)
 
     ```sh
     $ terraform -chdir='envs/plt/' plan -var-file='./terraform.tfvars'
     ```
 
-7.  Creates or updates infrastructure.
+8.  Creates or updates infrastructure.
 
     ```sh
     $ terraform -chdir='envs/plt/' apply -var-file='./terraform.tfvars' -auto-approve
