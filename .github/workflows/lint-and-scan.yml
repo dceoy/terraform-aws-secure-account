@@ -17,6 +17,9 @@ on:
           - format
         description: Choose the workflow to run
         default: lint
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   cfn-lint:
     if: >
@@ -44,3 +47,11 @@ jobs:
     with:
       search-path: .
       terraform-version: latest
+  dependabot-auto-merge:
+    if: >
+      github.event_name == 'pull_request'
+    needs:
+      - cfn-lint
+      - tf-lint-and-scan
+      - tf-format
+    uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
