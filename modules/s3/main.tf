@@ -92,10 +92,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "base" {
       storage_class = "INTELLIGENT_TIERING"
     }
     noncurrent_version_expiration {
-      noncurrent_days = 7
+      noncurrent_days = var.s3_noncurrent_version_expiration_days
     }
     abort_incomplete_multipart_upload {
-      days_after_initiation = 7
+      days_after_initiation = var.s3_abort_incomplete_multipart_upload_days
     }
     expiration {
       days = var.s3_expiration_days
@@ -114,10 +114,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "log" {
       storage_class = "INTELLIGENT_TIERING"
     }
     noncurrent_version_expiration {
-      noncurrent_days = 7
+      noncurrent_days = var.s3_noncurrent_version_expiration_days
     }
     abort_incomplete_multipart_upload {
-      days_after_initiation = 7
+      days_after_initiation = var.s3_abort_incomplete_multipart_upload_days
     }
     expiration {
       days = var.s3_expiration_days

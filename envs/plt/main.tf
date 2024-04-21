@@ -17,14 +17,16 @@ module "kms" {
 }
 
 module "s3" {
-  source                          = "../../modules/s3"
-  system_name                     = var.system_name
-  env_type                        = var.env_type
-  s3_kms_key_arn                  = module.kms.kms_key_arn
-  s3_expiration_days              = var.s3_expiration_days
-  s3_force_destroy                = var.s3_force_destroy
-  enable_s3_server_access_logging = var.enable_s3_server_access_logging
-  enable_s3_storage_lens          = var.enable_s3_storage_lens
+  source                                    = "../../modules/s3"
+  system_name                               = var.system_name
+  env_type                                  = var.env_type
+  s3_kms_key_arn                            = module.kms.kms_key_arn
+  s3_expiration_days                        = var.s3_expiration_days
+  s3_force_destroy                          = var.s3_force_destroy
+  s3_noncurrent_version_expiration_days     = var.s3_noncurrent_version_expiration_days
+  s3_abort_incomplete_multipart_upload_days = var.s3_abort_incomplete_multipart_upload_days
+  enable_s3_server_access_logging           = var.enable_s3_server_access_logging
+  enable_s3_storage_lens                    = var.enable_s3_storage_lens
 }
 
 module "cloudtrail" {

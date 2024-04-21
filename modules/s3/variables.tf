@@ -28,6 +28,18 @@ variable "s3_force_destroy" {
   default     = true
 }
 
+variable "s3_noncurrent_version_expiration_days" {
+  description = "S3 noncurrent version expiration days"
+  type        = number
+  default     = 7
+}
+
+variable "s3_abort_incomplete_multipart_upload_days" {
+  description = "S3 abort incomplete multipart upload days"
+  type        = number
+  default     = 7
+}
+
 variable "enable_s3_server_access_logging" {
   description = "Enable S3 server access logging"
   type        = bool
