@@ -40,6 +40,18 @@ variable "readonly_iam_user_names" {
   default     = []
 }
 
+variable "activate_iam_user_names" {
+  description = "Activate IAM user names"
+  type        = list(string)
+  default     = []
+}
+
+variable "iam_role_max_session_duration" {
+  description = "IAM role max session duration"
+  type        = number
+  default     = 43200
+}
+
 variable "iam_force_destroy" {
   description = "IAM force destroy"
   type        = bool

@@ -1,13 +1,15 @@
 module "iam" {
-  source                       = "../../modules/iam"
-  system_name                  = var.system_name
-  env_type                     = var.env_type
-  account_alias                = var.account_alias
-  administrator_iam_user_names = var.administrator_iam_user_names
-  developer_iam_user_names     = var.developer_iam_user_names
-  readonly_iam_user_names      = var.readonly_iam_user_names
-  iam_force_destroy            = var.iam_force_destroy
-  enable_iam_accessanalyzer    = var.enable_iam_accessanalyzer
+  source                        = "../../modules/iam"
+  system_name                   = var.system_name
+  env_type                      = var.env_type
+  account_alias                 = var.account_alias
+  administrator_iam_user_names  = var.administrator_iam_user_names
+  developer_iam_user_names      = var.developer_iam_user_names
+  readonly_iam_user_names       = var.readonly_iam_user_names
+  activate_iam_user_names       = var.activate_iam_user_names
+  iam_role_max_session_duration = var.iam_role_max_session_duration
+  iam_force_destroy             = var.iam_force_destroy
+  enable_iam_accessanalyzer     = var.enable_iam_accessanalyzer
 }
 
 module "kms" {

@@ -33,6 +33,11 @@ output "user_mfa_iam_policy_arn" {
   value       = module.iam.user_mfa_iam_policy_arn
 }
 
+output "activate_iam_policy_arn" {
+  description = "Activate IAM policy ARN"
+  value       = module.iam.activate_iam_policy_arn
+}
+
 output "administrator_iam_group_arn" {
   description = "Administrator IAM group ARN"
   value       = module.iam.administrator_iam_group_arn
@@ -46,6 +51,11 @@ output "developer_iam_group_arn" {
 output "readonly_iam_group_arn" {
   description = "Readonly IAM group ARN"
   value       = module.iam.readonly_iam_group_arn
+}
+
+output "activate_iam_group_arn" {
+  description = "Activate IAM user names"
+  value       = module.iam.activate_iam_group_arn
 }
 
 output "iam_user_ids" {

@@ -102,7 +102,8 @@ resource "aws_iam_role" "administrator" {
       }
     ]
   })
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  managed_policy_arns  = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  max_session_duration = var.iam_role_max_session_duration
   tags = {
     Name       = "${var.system_name}-${var.env_type}-administrator-iam-role"
     SystemName = var.system_name
@@ -143,7 +144,7 @@ resource "aws_iam_policy" "developer" {
         Sid      = "UserAssumeAccountRoles"
         Effect   = "Allow"
         Action   = ["sts:AssumeRole"]
-        Resource = "arn:aws:iam::${local.account_id}:role/*"
+        Resource = ["arn:aws:iam::${local.account_id}:role/*"]
         Condition = {
           Bool = {
             "aws:MultiFactorAuthPresent" = "true"
@@ -229,6 +230,24 @@ resource "aws_iam_policy" "mfa" {
   }
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "activate" {
+  name        = "${var.system_name}-${var.env_type}-activate-fullaccess-iam-policy"
+  description = "Activate full access IAM Policy"
+  path        = "/"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "AllowActivateActions"
+        Effect   = "Allow"
+        Action   = ["activate:*"]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # tfsec:ignore:aws-iam-enforce-group-mfa
 resource "aws_iam_group" "administrator" {
   name = "${var.system_name}-${var.env_type}-administrator-iam-group"
@@ -244,6 +263,12 @@ resource "aws_iam_group" "developer" {
 # tfsec:ignore:aws-iam-enforce-group-mfa
 resource "aws_iam_group" "readonly" {
   name = "${var.system_name}-${var.env_type}-readonly-iam-group"
+  path = "/"
+}
+
+# tfsec:ignore:aws-iam-enforce-group-mfa
+resource "aws_iam_group" "activate" {
+  name = "${var.system_name}-${var.env_type}-activate-iam-group"
   path = "/"
 }
 
@@ -296,6 +321,11 @@ resource "aws_iam_group_policy_attachment" "credential" {
   policy_arn = "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials"
 }
 
+resource "aws_iam_group_policy_attachment" "activate" {
+  group      = aws_iam_group.activate.name
+  policy_arn = aws_iam_policy.activate.arn
+}
+
 resource "aws_iam_user" "users" {
   for_each = toset(
     concat(
@@ -333,4 +363,11 @@ resource "aws_iam_user_group_membership" "readonly" {
   for_each   = toset(var.readonly_iam_user_names)
   user       = each.key
   groups     = [aws_iam_group.readonly.name]
+}
+
+resource "aws_iam_user_group_membership" "activate" {
+  depends_on = [aws_iam_user.users]
+  for_each   = toset(var.activate_iam_user_names)
+  user       = each.key
+  groups     = [aws_iam_group.activate.name]
 }
