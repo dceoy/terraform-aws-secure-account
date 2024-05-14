@@ -53,3 +53,10 @@ Installation
     ```sh
     $ terraform -chdir='envs/plt/' apply -var-file='./terraform.tfvars' -auto-approve
     ```
+
+Cleanup
+-------
+
+```sh
+$ terraform -chdir='envs/plt/' destroy -var-file='./terraform.tfvars' -auto-approve
+```
