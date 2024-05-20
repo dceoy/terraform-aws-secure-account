@@ -25,8 +25,9 @@ resource "aws_config_configuration_recorder_status" "config" {
 }
 
 resource "aws_iam_role" "config" {
-  name = "${var.system_name}-${var.env_type}-config-iam-role"
-  path = "/"
+  name        = "${var.system_name}-${var.env_type}-config-iam-role"
+  description = "AWS Config IAM role"
+  path        = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

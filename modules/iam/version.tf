@@ -5,9 +5,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.50.0"
     }
-    awscc = {
-      source  = "hashicorp/awscc"
-      version = "~> 0.77.0"
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0.5"
     }
   }
 }

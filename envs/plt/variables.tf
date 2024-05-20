@@ -58,6 +58,24 @@ variable "iam_force_destroy" {
   default     = true
 }
 
+variable "github_repositories_requiring_oidc" {
+  description = "GitHub repositories requiring OIDC"
+  type        = list(string)
+  default     = []
+}
+
+variable "github_iam_oidc_provider_iam_policy_arns" {
+  description = "IAM role policy ARNs for the GitHub IAM OIDC provider"
+  type        = list(string)
+  default     = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+}
+
+variable "github_enterprise_slug" {
+  description = "GitHub Enterprise slug"
+  type        = string
+  default     = null
+}
+
 variable "s3_expiration_days" {
   description = "S3 expiration days"
   type        = number

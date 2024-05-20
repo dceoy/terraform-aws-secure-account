@@ -5,14 +5,19 @@ env_type      = "plt"
 account_alias = null
 
 # AWS IAM
-force_destroy                 = true
-administrator_iam_user_names  = []
-developer_iam_user_names      = []
-readonly_iam_user_names       = []
-activate_iam_user_names       = []
-iam_role_max_session_duration = 43200
-iam_force_destroy             = true
-enable_iam_accessanalyzer     = true
+force_destroy                      = true
+administrator_iam_user_names       = []
+developer_iam_user_names           = []
+readonly_iam_user_names            = []
+activate_iam_user_names            = []
+iam_role_max_session_duration      = 43200
+iam_force_destroy                  = true
+enable_iam_accessanalyzer          = true
+github_repositories_requiring_oidc = []
+github_iam_oidc_provider_iam_policy_arns = [
+  "arn:aws:iam::aws:policy/AdministratorAccess"
+]
+github_enterprise_slug = null
 
 # Amazon S3
 s3_expiration_days              = null

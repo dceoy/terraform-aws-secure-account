@@ -26,8 +26,9 @@ resource "aws_accessanalyzer_analyzer" "account" {
 }
 
 resource "aws_iam_role" "cloudformation_stackset_administration" {
-  name = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role"
-  path = "/"
+  name        = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role"
+  description = "CloudFormation stackset administration IAM role"
+  path        = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -63,8 +64,9 @@ resource "aws_iam_role" "cloudformation_stackset_administration" {
 }
 
 resource "aws_iam_role" "cloudformation_stackset_execution" {
-  name = "${var.system_name}-${var.env_type}-cloudformation-stackset-execution-iam-role"
-  path = "/"
+  name        = "${var.system_name}-${var.env_type}-cloudformation-stackset-execution-iam-role"
+  description = "CloudFormation stackset execution IAM role"
+  path        = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -87,8 +89,9 @@ resource "aws_iam_role" "cloudformation_stackset_execution" {
 }
 
 resource "aws_iam_role" "administrator" {
-  name = "${var.system_name}-${var.env_type}-administrator-iam-role"
-  path = "/"
+  name        = "${var.system_name}-${var.env_type}-administrator-iam-role"
+  description = "Administrator IAM role"
+  path        = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -113,7 +116,7 @@ resource "aws_iam_role" "administrator" {
 
 resource "aws_iam_policy" "administrator" {
   name        = "${var.system_name}-${var.env_type}-administrator-switch-iam-policy"
-  description = "Administrator switch IAM Policy"
+  description = "Administrator switch IAM policy"
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -135,7 +138,7 @@ resource "aws_iam_policy" "administrator" {
 
 resource "aws_iam_policy" "developer" {
   name        = "${var.system_name}-${var.env_type}-developer-switch-iam-policy"
-  description = "developer switch IAM Policy"
+  description = "Developer switch IAM policy"
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -161,7 +164,7 @@ resource "aws_iam_policy" "developer" {
 # tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "mfa" {
   name        = "${var.system_name}-${var.env_type}-user-mfa-iam-policy"
-  description = "User MFA IAM Policy"
+  description = "User MFA IAM policy"
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -233,7 +236,7 @@ resource "aws_iam_policy" "mfa" {
 # tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "activate" {
   name        = "${var.system_name}-${var.env_type}-activate-fullaccess-iam-policy"
-  description = "Activate full access IAM Policy"
+  description = "Activate full access IAM policy"
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -370,4 +373,54 @@ resource "aws_iam_user_group_membership" "activate" {
   for_each   = toset(var.activate_iam_user_names)
   user       = each.key
   groups     = [aws_iam_group.activate.name]
+}
+
+resource "aws_iam_openid_connect_provider" "github" {
+  count           = length(var.github_repositories_requiring_oidc) > 0 ? 1 : 0
+  url             = var.github_enterprise_slug != null ? "https://token.actions.githubusercontent.com/${var.github_enterprise_slug}" : "https://token.actions.githubusercontent.com"
+  thumbprint_list = [local.tls_certificate_sha1_fingerprint]
+  client_id_list = setunion(
+    toset(["sts.amazonaws.com"]),
+    toset([for r in var.github_repositories_requiring_oidc : "https://github.com/${split("/", r)[0]}"])
+  )
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-github-iam-oidc-provider"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
+}
+
+resource "aws_iam_role" "github" {
+  count       = length(aws_iam_openid_connect_provider.github) > 0 ? 1 : 0
+  name        = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-iam-role"
+  description = "GitHub OIDC provider IAM role"
+  path        = "/"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = var.github_enterprise_slug != null ? "${aws_iam_openid_connect_provider.github[0].arn}/${var.github_enterprise_slug}" : aws_iam_openid_connect_provider.github[0].arn
+        }
+        Action = ["sts:AssumeRoleWithWebIdentity"]
+        Condition = {
+          StringLike = {
+            "token.actions.githubusercontent.com:sub" = [
+              for r in var.github_repositories_requiring_oidc : "repo:${r}:*"
+            ]
+          }
+          StringEquals = {
+            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+  managed_policy_arns = var.github_iam_oidc_provider_iam_policy_arns
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
 }
