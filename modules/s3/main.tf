@@ -177,7 +177,7 @@ resource "aws_s3_bucket_policy" "base" {
         Resource = [aws_s3_bucket.base.arn]
         Condition = {
           StringEquals = {
-            "AWS:SourceAccount" = local.account_id
+            "aws:SourceAccount" = local.account_id
           }
         }
       },
@@ -192,7 +192,7 @@ resource "aws_s3_bucket_policy" "base" {
         Condition = {
           StringEquals = {
             "s3:x-amz-acl"      = "bucket-owner-full-control"
-            "AWS:SourceAccount" = local.account_id
+            "aws:SourceAccount" = local.account_id
           }
         }
       }

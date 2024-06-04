@@ -62,7 +62,7 @@ resource "aws_kms_key" "custom" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "AWS:SourceAccount" = local.account_id
+            "aws:SourceAccount" = local.account_id
           }
         }
       },

@@ -40,7 +40,7 @@ resource "aws_iam_role" "config" {
         Action = ["sts:AssumeRole"]
         Condition = {
           StringEquals = {
-            "AWS:SourceAccount" = local.account_id
+            "aws:SourceAccount" = local.account_id
           }
         }
       }
@@ -65,7 +65,7 @@ resource "aws_iam_role" "config" {
           Condition = {
             StringEquals = {
               "s3:x-amz-acl"      = "bucket-owner-full-control"
-              "AWS:SourceAccount" = local.account_id
+              "aws:SourceAccount" = local.account_id
             }
           }
         },
@@ -79,7 +79,7 @@ resource "aws_iam_role" "config" {
           Resource = var.s3_kms_key_arn
           Condition = {
             StringEquals = {
-              "AWS:SourceAccount" = local.account_id
+              "aws:SourceAccount" = local.account_id
             }
           }
         }
