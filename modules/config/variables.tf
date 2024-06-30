@@ -10,6 +10,12 @@ variable "env_type" {
   default     = "plt"
 }
 
+variable "iam_role_force_detach_policies" {
+  description = "Whether to force detaching any IAM policies the IAM role has before destroying it"
+  type        = bool
+  default     = true
+}
+
 variable "s3_bucket_id" {
   description = "S3 bucket ID"
   type        = string
@@ -23,7 +29,7 @@ variable "s3_kms_key_arn" {
 }
 
 variable "allow_non_console_access_without_mfa" {
-  description = "Allow non-console access without MFA"
+  description = "Whether to allow non-console access without MFA"
   type        = bool
   default     = false
 }

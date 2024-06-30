@@ -52,8 +52,14 @@ variable "iam_role_max_session_duration" {
   default     = 43200
 }
 
-variable "iam_force_destroy" {
-  description = "IAM force destroy"
+variable "iam_role_force_detach_policies" {
+  description = "Whether to force detaching any IAM policies the IAM role has before destroying it"
+  type        = bool
+  default     = true
+}
+
+variable "iam_user_force_destroy" {
+  description = "Whether to destroy the IAM user even if it has non-Terraform-managed IAM access keys, login profile or MFA devices"
   type        = bool
   default     = true
 }
@@ -83,7 +89,7 @@ variable "s3_expiration_days" {
 }
 
 variable "s3_force_destroy" {
-  description = "S3 force destroy"
+  description = "Whether to delete all objects from the bucket when destroying the S3 bucket"
   type        = bool
   default     = true
 }
@@ -160,49 +166,49 @@ variable "chatbot_slack_channel_id" {
 }
 
 variable "enable_iam_accessanalyzer" {
-  description = "Enable IAM Access Analyzer"
+  description = "Whether to enable IAM Access Analyzer"
   type        = bool
   default     = true
 }
 
 variable "enable_s3_server_access_logging" {
-  description = "Enable S3 server access logging"
+  description = "Whether to enable S3 server access logging"
   type        = bool
   default     = true
 }
 
 variable "enable_s3_storage_lens" {
-  description = "Enable S3 Storage Lens"
+  description = "Whether to enable S3 Storage Lens"
   type        = bool
   default     = true
 }
 
 variable "enable_cloudtrail" {
-  description = "Enable CloudTrail"
+  description = "Whether to enable CloudTrail"
   type        = bool
   default     = true
 }
 
 variable "enable_guardduty" {
-  description = "Enable GuardDuty"
+  description = "Whether to enable GuardDuty"
   type        = bool
   default     = true
 }
 
 variable "enable_config" {
-  description = "Enable Config"
+  description = "Whether to enable Config"
   type        = bool
   default     = true
 }
 
 variable "enable_securityhub" {
-  description = "Enable Security Hub"
+  description = "Whether to enable Security Hub"
   type        = bool
   default     = true
 }
 
 variable "enable_budgets" {
-  description = "Enable Budgets"
+  description = "Whether to enable Budgets"
   type        = bool
   default     = true
 }

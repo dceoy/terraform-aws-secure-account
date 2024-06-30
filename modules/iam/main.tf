@@ -26,9 +26,10 @@ resource "aws_accessanalyzer_analyzer" "account" {
 }
 
 resource "aws_iam_role" "cloudformation_stackset_administration" {
-  name        = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role"
-  description = "CloudFormation stackset administration IAM role"
-  path        = "/"
+  name                  = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role"
+  description           = "CloudFormation stackset administration IAM role"
+  force_detach_policies = var.iam_role_force_detach_policies
+  path                  = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -64,9 +65,10 @@ resource "aws_iam_role" "cloudformation_stackset_administration" {
 }
 
 resource "aws_iam_role" "cloudformation_stackset_execution" {
-  name        = "${var.system_name}-${var.env_type}-cloudformation-stackset-execution-iam-role"
-  description = "CloudFormation stackset execution IAM role"
-  path        = "/"
+  name                  = "${var.system_name}-${var.env_type}-cloudformation-stackset-execution-iam-role"
+  description           = "CloudFormation stackset execution IAM role"
+  force_detach_policies = var.iam_role_force_detach_policies
+  path                  = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -89,9 +91,10 @@ resource "aws_iam_role" "cloudformation_stackset_execution" {
 }
 
 resource "aws_iam_role" "administrator" {
-  name        = "${var.system_name}-${var.env_type}-administrator-iam-role"
-  description = "Administrator IAM role"
-  path        = "/"
+  name                  = "${var.system_name}-${var.env_type}-administrator-iam-role"
+  description           = "Administrator IAM role"
+  force_detach_policies = var.iam_role_force_detach_policies
+  path                  = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -339,7 +342,7 @@ resource "aws_iam_user" "users" {
   )
   name          = each.key
   path          = "/"
-  force_destroy = var.iam_force_destroy
+  force_destroy = var.iam_user_force_destroy
   tags = {
     Name       = each.key
     SystemName = var.system_name
@@ -391,10 +394,11 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 resource "aws_iam_role" "github" {
-  count       = length(aws_iam_openid_connect_provider.github) > 0 ? 1 : 0
-  name        = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-iam-role"
-  description = "GitHub OIDC provider IAM role"
-  path        = "/"
+  count                 = length(aws_iam_openid_connect_provider.github) > 0 ? 1 : 0
+  name                  = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-iam-role"
+  description           = "GitHub OIDC provider IAM role"
+  force_detach_policies = var.iam_role_force_detach_policies
+  path                  = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

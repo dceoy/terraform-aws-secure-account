@@ -8,9 +8,10 @@ resource "awscc_chatbot_slack_channel_configuration" "slack" {
 }
 
 resource "aws_iam_role" "slack" {
-  name        = "${var.system_name}-${var.env_type}-chatbot-iam-role"
-  description = "AWS Chatbot IAM role"
-  path        = "/"
+  name                  = "${var.system_name}-${var.env_type}-chatbot-iam-role"
+  description           = "AWS Chatbot IAM role"
+  force_detach_policies = var.iam_role_force_detach_policies
+  path                  = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

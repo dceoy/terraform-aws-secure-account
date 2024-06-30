@@ -56,14 +56,20 @@ variable "iam_role_max_session_duration" {
   }
 }
 
-variable "iam_force_destroy" {
-  description = "IAM force destroy"
+variable "iam_role_force_detach_policies" {
+  description = "Whether to force detaching any IAM policies the IAM role has before destroying it"
+  type        = bool
+  default     = true
+}
+
+variable "iam_user_force_destroy" {
+  description = "Whether to destroy the IAM user even if it has non-Terraform-managed IAM access keys, login profile or MFA devices"
   type        = bool
   default     = true
 }
 
 variable "enable_iam_accessanalyzer" {
-  description = "Enable IAM Access Analyzer"
+  description = "Whether to enable IAM Access Analyzer"
   type        = bool
   default     = true
 }

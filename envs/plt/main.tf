@@ -8,7 +8,8 @@ module "iam" {
   readonly_iam_user_names                  = var.readonly_iam_user_names
   activate_iam_user_names                  = var.activate_iam_user_names
   iam_role_max_session_duration            = var.iam_role_max_session_duration
-  iam_force_destroy                        = var.iam_force_destroy
+  iam_role_force_detach_policies           = var.iam_role_force_detach_policies
+  iam_user_force_destroy                   = var.iam_user_force_destroy
   enable_iam_accessanalyzer                = var.enable_iam_accessanalyzer
   github_repositories_requiring_oidc       = var.github_repositories_requiring_oidc
   github_iam_oidc_provider_iam_policy_arns = var.github_iam_oidc_provider_iam_policy_arns
@@ -58,6 +59,7 @@ module "config" {
   source                               = "../../modules/config"
   system_name                          = var.system_name
   env_type                             = var.env_type
+  iam_role_force_detach_policies       = var.iam_role_force_detach_policies
   s3_bucket_id                         = module.s3.s3_base_s3_bucket_id
   s3_kms_key_arn                       = module.kms.kms_key_arn
   allow_non_console_access_without_mfa = false
@@ -91,9 +93,10 @@ module "chatbot" {
     && var.chatbot_slack_channel_id != null
     && (var.enable_securityhub || var.enable_budgets)
   ) ? 1 : 0
-  source      = "../../modules/chatbot"
-  system_name = var.system_name
-  env_type    = var.env_type
+  source                         = "../../modules/chatbot"
+  system_name                    = var.system_name
+  env_type                       = var.env_type
+  iam_role_force_detach_policies = var.iam_role_force_detach_policies
   sns_topic_arns = compact([
     length(module.securityhub) > 0 ? module.securityhub[0].securityhub_sns_topic_arn : null,
     length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_arn : null
