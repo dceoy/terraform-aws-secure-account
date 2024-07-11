@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "base" {
   }
 }
 
-# tfsec:ignore:aws-s3-enable-bucket-logging
+# trivy:ignore:AVD-AWS-0089
 resource "aws_s3_bucket" "log" {
   count         = var.enable_s3_server_access_logging ? 1 : 0
   bucket        = local.log_s3_bucket_name

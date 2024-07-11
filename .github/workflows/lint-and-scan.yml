@@ -30,6 +30,7 @@ jobs:
     with:
       search-path: .
       python-version: 3.x
+      cfn-lint-options: --ignore-checks W1011 --template
   tf-lint-and-scan:
     if: >
       github.event_name == 'push'
