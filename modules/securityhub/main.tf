@@ -22,7 +22,7 @@ resource "aws_securityhub_product_subscription" "standard" {
 }
 
 resource "aws_securityhub_standards_control" "standard" {
-  depends_on            = [aws_securityhub_account.standard]
+  depends_on            = [aws_securityhub_standards_subscription.standard, aws_securityhub_product_subscription.standard]
   for_each              = var.securityhub_disabled_standards_controls
   control_status        = "DISABLED"
   standards_control_arn = "arn:aws:securityhub:${local.region}:${local.account_id}:control/${each.key}"
