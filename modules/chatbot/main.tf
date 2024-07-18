@@ -5,6 +5,20 @@ resource "awscc_chatbot_slack_channel_configuration" "slack" {
   slack_workspace_id = var.chatbot_slack_workspace_id
   sns_topic_arns     = var.sns_topic_arns
   logging_level      = "NONE"
+  tags = [
+    {
+      key   = "Name"
+      value = "${var.system_name}-${var.env_type}-chatbot-slack-channel-configuration"
+    },
+    {
+      key   = "SystemName"
+      value = var.system_name
+    },
+    {
+      key   = "EnvType"
+      value = var.env_type
+    }
+  ]
 }
 
 resource "aws_iam_role" "slack" {
