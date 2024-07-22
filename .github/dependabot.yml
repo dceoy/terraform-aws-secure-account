@@ -10,10 +10,6 @@ updates:
     schedule:
       interval: daily
   - package-ecosystem: terraform
-    directory: /envs/plt/
-    schedule:
-      interval: daily
-  - package-ecosystem: terraform
     directory: /modules/iam/
     schedule:
       interval: daily

@@ -3,7 +3,7 @@ terraform-aws-secure-account
 
 Terraform modules for securing AWS accounts
 
-[![Lint and scan](https://github.com/dceoy/terraform-aws-secure-account/actions/workflows/lint-and-scan.yml/badge.svg)](https://github.com/dceoy/terraform-aws-secure-account/actions/workflows/lint-and-scan.yml)
+[![CI](https://github.com/dceoy/terraform-aws-secure-account/actions/workflows/ci.yml/badge.svg)](https://github.com/dceoy/terraform-aws-secure-account/actions/workflows/ci.yml)
 
 Installation
 ------------
