@@ -1,5 +1,5 @@
 ---
-name: Lint, scan, and upgrade
+name: CI workflows
 on:
   push:
     branches:
