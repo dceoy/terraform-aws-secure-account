@@ -49,7 +49,7 @@ jobs:
     with:
       search-path: .
       terraform-version: latest
-  dependabot-terraform-upgrade:
+  dependabot-terraform-lock-files-upgrade:
     if: >
       (github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/'))
       || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
@@ -63,5 +63,5 @@ jobs:
     needs:
       - cloudformation-lint
       - terraform-lint-and-scan
-      - dependabot-terraform-upgrade
+      - dependabot-terraform-lock-files-upgrade
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
