@@ -51,7 +51,7 @@ jobs:
       terraform-version: latest
   dependabot-terraform-upgrade:
     if: >
-      (github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/'))
+      (github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/'))
       || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
     uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-lock-files-upgrade.yml@main
     with:
