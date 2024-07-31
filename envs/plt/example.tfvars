@@ -20,6 +20,10 @@ github_iam_oidc_provider_iam_policy_arns = [
 ]
 github_enterprise_slug = null
 
+# AWS KMS
+kms_key_deletion_window_in_days = 30
+kms_key_rotation_period_in_days = 365
+
 # Amazon S3
 s3_expiration_days                        = null
 s3_force_destroy                          = true

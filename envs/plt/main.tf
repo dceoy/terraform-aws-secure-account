@@ -17,9 +17,11 @@ module "iam" {
 }
 
 module "kms" {
-  source      = "../../modules/kms"
-  system_name = var.system_name
-  env_type    = var.env_type
+  source                          = "../../modules/kms"
+  system_name                     = var.system_name
+  env_type                        = var.env_type
+  kms_key_deletion_window_in_days = var.kms_key_deletion_window_in_days
+  kms_key_rotation_period_in_days = var.kms_key_rotation_period_in_days
 }
 
 module "s3" {

@@ -1,7 +1,8 @@
 resource "aws_kms_key" "custom" {
   description             = "KMS key for S3 and SNS"
-  deletion_window_in_days = 30
+  deletion_window_in_days = var.kms_key_deletion_window_in_days
   enable_key_rotation     = true
+  rotation_period_in_days = var.kms_key_rotation_period_in_days
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
