@@ -21,10 +21,13 @@ github_iam_oidc_provider_iam_policy_arns = [
 github_enterprise_slug = null
 
 # Amazon S3
-s3_expiration_days              = null
-s3_force_destroy                = true
-enable_s3_server_access_logging = true
-enable_s3_storage_lens          = true
+s3_expiration_days                        = null
+s3_force_destroy                          = true
+s3_noncurrent_version_expiration_days     = 7
+s3_abort_incomplete_multipart_upload_days = 7
+s3_expired_object_delete_marker           = true
+enable_s3_server_access_logging           = true
+enable_s3_storage_lens                    = true
 
 # AWS CloudTrail
 enable_cloudtrail = true

@@ -50,7 +50,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "base" {
     bucket_key_enabled = true
     apply_server_side_encryption_by_default {
       kms_master_key_id = var.s3_kms_key_arn
-      sse_algorithm     = "aws:kms"
+      sse_algorithm     = var.s3_kms_key_arn != null ? "aws:kms" : "AES256"
     }
   }
 }
@@ -62,7 +62,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log" {
     bucket_key_enabled = true
     apply_server_side_encryption_by_default {
       kms_master_key_id = var.s3_kms_key_arn
-      sse_algorithm     = "aws:kms"
+      sse_algorithm     = var.s3_kms_key_arn != null ? "aws:kms" : "AES256"
     }
   }
 }
@@ -98,7 +98,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "base" {
       days_after_initiation = var.s3_abort_incomplete_multipart_upload_days
     }
     expiration {
-      days = var.s3_expiration_days
+      days                         = var.s3_expiration_days
+      expired_object_delete_marker = var.s3_expired_object_delete_marker
     }
   }
 }
@@ -120,7 +121,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "log" {
       days_after_initiation = var.s3_abort_incomplete_multipart_upload_days
     }
     expiration {
-      days = var.s3_expiration_days
+      days                         = var.s3_expiration_days
+      expired_object_delete_marker = var.s3_expired_object_delete_marker
     }
   }
 }
