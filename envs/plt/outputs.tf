@@ -163,9 +163,9 @@ output "budgets_sns_topic_arn" {
   value       = length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_arn : null
 }
 
-output "chatbot_slack_channel_configuration_id" {
-  description = "Chatbot Slack channel configuration ID"
-  value       = length(module.chatbot) > 0 ? module.chatbot[0].chatbot_slack_channel_configuration_id : null
+output "chatbot_slack_channel_configuration_arn" {
+  description = "Chatbot Slack channel configuration ARN"
+  value       = length(module.chatbot) > 0 ? module.chatbot[0].chatbot_slack_channel_configuration_arn : null
 }
 
 output "chatbot_iam_role_arn" {

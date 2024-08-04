@@ -17,7 +17,3 @@ updates:
     directory: /modules/kms/
     schedule:
       interval: daily
-  - package-ecosystem: terraform
-    directory: /modules/chatbot/
-    schedule:
-      interval: daily

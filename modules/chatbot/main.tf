@@ -1,24 +1,15 @@
-resource "awscc_chatbot_slack_channel_configuration" "slack" {
+resource "aws_chatbot_slack_channel_configuration" "slack" {
   configuration_name = "${var.system_name}-${var.env_type}-chatbot-slack-channel-configuration"
   iam_role_arn       = aws_iam_role.slack.arn
   slack_channel_id   = var.chatbot_slack_channel_id
-  slack_workspace_id = var.chatbot_slack_workspace_id
+  slack_team_id      = var.chatbot_slack_workspace_id
   sns_topic_arns     = var.sns_topic_arns
   logging_level      = "NONE"
-  tags = [
-    {
-      key   = "Name"
-      value = "${var.system_name}-${var.env_type}-chatbot-slack-channel-configuration"
-    },
-    {
-      key   = "SystemName"
-      value = var.system_name
-    },
-    {
-      key   = "EnvType"
-      value = var.env_type
-    }
-  ]
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-chatbot-slack-channel-configuration"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
 }
 
 resource "aws_iam_role" "slack" {

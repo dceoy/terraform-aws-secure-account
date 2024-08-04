@@ -1,6 +1,6 @@
-output "chatbot_slack_channel_configuration_id" {
-  description = "Chatbot Slack channel configuration ID"
-  value       = awscc_chatbot_slack_channel_configuration.slack.id
+output "chatbot_slack_channel_configuration_arn" {
+  description = "Chatbot Slack channel configuration ARN"
+  value       = aws_chatbot_slack_channel_configuration.slack.chat_configuration_arn
 }
 
 output "chatbot_iam_role_arn" {
