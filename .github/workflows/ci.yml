@@ -50,6 +50,7 @@ jobs:
     with:
       terraform-working-directories: envs/plt
       terraform-version: latest
+      create-pr: ${{ github.event_name == 'workflow_dispatch' }}
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
