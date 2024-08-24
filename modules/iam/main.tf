@@ -95,6 +95,7 @@ resource "aws_iam_role" "administrator" {
   description           = "Administrator IAM role"
   force_detach_policies = var.iam_role_force_detach_policies
   path                  = "/"
+  max_session_duration  = var.iam_role_max_session_duration
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -108,8 +109,7 @@ resource "aws_iam_role" "administrator" {
       }
     ]
   })
-  managed_policy_arns  = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-  max_session_duration = var.iam_role_max_session_duration
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   tags = {
     Name       = "${var.system_name}-${var.env_type}-administrator-iam-role"
     SystemName = var.system_name
