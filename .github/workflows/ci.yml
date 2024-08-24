@@ -1,5 +1,5 @@
 ---
-name: CI workflows
+name: CI/CD
 on:
   push:
     branches:
@@ -59,3 +59,9 @@ jobs:
       - terraform-lint-and-scan
       - terraform-lock-files-upgrade
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
+  open-pr-aggregate:
+    if: >
+      github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/')
+    uses: dceoy/gh-actions-for-devops/.github/workflows/github-open-pr-aggregate.yml@main
+    with:
+      pr-branch-prefix: dependabot/terraform/
