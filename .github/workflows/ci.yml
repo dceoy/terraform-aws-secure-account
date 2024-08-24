@@ -14,7 +14,6 @@ on:
         type: choice
         options:
           - lint-and-scan
-          - format
           - upgrade
         description: Choose the workflow to run
         default: lint-and-scan
@@ -41,18 +40,12 @@ jobs:
     with:
       search-path: .
       terraform-version: latest
-  terraform-format:
+  terraform-lock-files-upgrade:
     if: >
-      github.event_name == 'pull_request'
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'format')
-    uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-format-and-pr.yml@main
-    with:
-      search-path: .
-      terraform-version: latest
-  dependabot-terraform-lock-files-upgrade:
-    if: >
-      (github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/'))
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
+      (
+        github.event_name == 'pull_request'
+        && (startswith(github.head_ref, 'dependabot/terraform/') || startswith(github.head_ref, 'renovate/'))
+      ) || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
     uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-lock-files-upgrade.yml@main
     with:
       terraform-working-directories: envs/plt
@@ -63,5 +56,5 @@ jobs:
     needs:
       - cloudformation-lint
       - terraform-lint-and-scan
-      - dependabot-terraform-lock-files-upgrade
+      - terraform-lock-files-upgrade
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
