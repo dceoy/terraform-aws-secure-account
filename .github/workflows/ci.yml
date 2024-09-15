@@ -62,6 +62,8 @@ jobs:
       - cloudformation-lint
       - terraform-lint-and-scan
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
+    with:
+      unconditional: true
   open-pr-aggregate:
     if: >
       github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/')
