@@ -68,9 +68,9 @@ output "github_iam_oidc_provider_arn" {
   value       = module.iam.github_iam_oidc_provider_arn
 }
 
-output "github_iam_oidc_provider_iam_role_arn" {
-  description = "GitHub IAM OIDC provider IAM role ARN"
-  value       = module.iam.github_iam_oidc_provider_iam_role_arn
+output "github_iam_oidc_provider_iam_role_arns" {
+  description = "GitHub IAM OIDC provider IAM role ARNs"
+  value       = module.iam.github_iam_oidc_provider_iam_role_arns
 }
 
 output "kms_key_arn" {

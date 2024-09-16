@@ -384,7 +384,7 @@ resource "aws_iam_openid_connect_provider" "github" {
   thumbprint_list = [local.tls_certificate_sha1_fingerprint]
   client_id_list = setunion(
     toset(["sts.amazonaws.com"]),
-    toset([for r in var.github_repositories_requiring_oidc : "https://github.com/${split("/", r)[0]}"])
+    toset([for r in setunion(values(var.github_repositories_requiring_oidc)...) : "https://github.com/${split("/", r)[0]}"])
   )
   tags = {
     Name       = "${var.system_name}-${var.env_type}-github-iam-oidc-provider"
@@ -394,9 +394,9 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 resource "aws_iam_role" "github" {
-  count                 = length(aws_iam_openid_connect_provider.github) > 0 ? 1 : 0
-  name                  = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-iam-role"
-  description           = "GitHub OIDC provider IAM role"
+  for_each              = length(aws_iam_openid_connect_provider.github) > 0 ? var.github_iam_oidc_provider_iam_policy_arns : {}
+  name                  = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-${each.key}-iam-role"
+  description           = "GitHub OIDC provider ${each.key} IAM role"
   force_detach_policies = var.iam_role_force_detach_policies
   path                  = "/"
   assume_role_policy = jsonencode({
@@ -411,7 +411,7 @@ resource "aws_iam_role" "github" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-              for r in var.github_repositories_requiring_oidc : "repo:${r}:*"
+              for r in var.github_repositories_requiring_oidc[each.key] : "repo:${r}:*"
             ]
           }
           StringEquals = {
@@ -421,9 +421,9 @@ resource "aws_iam_role" "github" {
       }
     ]
   })
-  managed_policy_arns = var.github_iam_oidc_provider_iam_policy_arns
+  managed_policy_arns = each.value
   tags = {
-    Name       = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-iam-role"
+    Name       = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-${each.key}-iam-role"
     SystemName = var.system_name
     EnvType    = var.env_type
   }

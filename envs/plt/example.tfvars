@@ -5,20 +5,18 @@ env_type      = "plt"
 account_alias = null
 
 # AWS IAM
-force_destroy                      = true
-administrator_iam_user_names       = []
-developer_iam_user_names           = []
-readonly_iam_user_names            = []
-activate_iam_user_names            = []
-iam_role_max_session_duration      = 43200
-iam_role_force_detach_policies     = true
-iam_user_force_destroy             = true
-enable_iam_accessanalyzer          = true
-github_repositories_requiring_oidc = []
-github_iam_oidc_provider_iam_policy_arns = [
-  "arn:aws:iam::aws:policy/AdministratorAccess"
-]
-github_enterprise_slug = null
+force_destroy                            = true
+administrator_iam_user_names             = []
+developer_iam_user_names                 = []
+readonly_iam_user_names                  = []
+activate_iam_user_names                  = []
+iam_role_max_session_duration            = 43200
+iam_role_force_detach_policies           = true
+iam_user_force_destroy                   = true
+enable_iam_accessanalyzer                = true
+github_repositories_requiring_oidc       = {}
+github_iam_oidc_provider_iam_policy_arns = {}
+github_enterprise_slug                   = null
 
 # AWS KMS
 kms_key_deletion_window_in_days = 30

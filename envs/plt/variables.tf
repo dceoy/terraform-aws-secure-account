@@ -66,14 +66,30 @@ variable "iam_user_force_destroy" {
 
 variable "github_repositories_requiring_oidc" {
   description = "GitHub repositories requiring OIDC"
-  type        = list(string)
-  default     = []
+  type        = map(list(string))
+  default     = {}
+  validation {
+    condition = alltrue([
+      for k, v in var.github_repositories_requiring_oidc : alltrue([
+        for r in v : can(regexall("^[A-Za-z0-9_.-]+?/([A-Za-z0-9_.:/-]+[*]?|\\*)$", r))
+      ])
+    ])
+    error_message = "GitHub repositories must be in the format 'organization/repository'"
+  }
 }
 
 variable "github_iam_oidc_provider_iam_policy_arns" {
   description = "IAM role policy ARNs for the GitHub IAM OIDC provider"
-  type        = list(string)
-  default     = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  type        = map(list(string))
+  default     = {}
+  validation {
+    condition = alltrue([
+      for k, v in var.github_iam_oidc_provider_iam_policy_arns : alltrue([
+        for a in v : can(regex("arn:aws:iam::(aws|[0-9]+):policy/[A-Za-z0-9_-]+", a))
+      ])
+    ])
+    error_message = "IAM role policy ARNs must be valid ARNs"
+  }
 }
 
 variable "github_enterprise_slug" {
