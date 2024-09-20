@@ -43,7 +43,7 @@ jobs:
     with:
       search-path: .
       terraform-version: latest
-  terraform-lock-files-upgrade:
+  terraform-lock-files-upgrade-and-pr-merge:
     if: >
       (
         github.event_name == 'pull_request'
@@ -53,20 +53,18 @@ jobs:
     with:
       terraform-working-directories: envs/plt
       terraform-version: latest
+      merged-pr-branch-prefix: ${{ startswith(github.head_ref, 'dependabot/terraform/') && 'dependabot/terraform/' || null }}
+      delete-merged-branch: true
       search-path-for-lint-and-scan: .
       merge-pr: ${{ github.event_name == 'pull_request' }}
   dependabot-auto-merge:
     if: >
-      github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+      github.event_name == 'pull_request'
+      && github.actor == 'dependabot[bot]'
+      && (! startswith(github.head_ref, 'dependabot/terraform/'))
     needs:
       - cloudformation-lint
       - terraform-lint-and-scan
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
     with:
       unconditional: true
-  open-pr-aggregate:
-    if: >
-      github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/')
-    uses: dceoy/gh-actions-for-devops/.github/workflows/github-open-pr-aggregate.yml@main
-    with:
-      pr-branch-prefix: dependabot/terraform/
