@@ -42,7 +42,7 @@ module "cloudtrail" {
   source         = "../../modules/cloudtrail"
   system_name    = var.system_name
   env_type       = var.env_type
-  s3_bucket_id   = module.s3.s3_base_s3_bucket_id
+  s3_bucket_id   = module.s3.awslogs_s3_bucket_id
   s3_kms_key_arn = module.kms.kms_key_arn
 }
 
@@ -62,7 +62,7 @@ module "config" {
   system_name                          = var.system_name
   env_type                             = var.env_type
   iam_role_force_detach_policies       = var.iam_role_force_detach_policies
-  s3_bucket_id                         = module.s3.s3_base_s3_bucket_id
+  s3_bucket_id                         = module.s3.awslogs_s3_bucket_id
   s3_kms_key_arn                       = module.kms.kms_key_arn
   allow_non_console_access_without_mfa = false
 }

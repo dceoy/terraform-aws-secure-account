@@ -83,14 +83,14 @@ output "kms_key_alias_name" {
   value       = module.kms.kms_key_alias_name
 }
 
-output "s3_base_s3_bucket_id" {
-  description = "S3 base S3 bucket ID"
-  value       = module.s3.s3_base_s3_bucket_id
+output "awslogs_s3_bucket_id" {
+  description = "AWS service logs S3 bucket ID"
+  value       = module.s3.awslogs_s3_bucket_id
 }
 
-output "s3_log_s3_bucket_id" {
-  description = "S3 log S3 bucket ID"
-  value       = module.s3.s3_log_s3_bucket_id
+output "s3logs_s3_bucket_id" {
+  description = "S3 server access logs S3 bucket ID"
+  value       = module.s3.s3logs_s3_bucket_id
 }
 
 output "s3_storage_lens_configuration_id" {

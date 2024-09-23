@@ -1,51 +1,51 @@
-resource "aws_s3_bucket" "base" {
-  bucket        = local.base_s3_bucket_name
+resource "aws_s3_bucket" "awslogs" {
+  bucket        = local.awslogs_s3_bucket_name
   force_destroy = var.s3_force_destroy
   tags = {
-    Name       = local.base_s3_bucket_name
+    Name       = local.awslogs_s3_bucket_name
     SystemName = var.system_name
     EnvType    = var.env_type
   }
 }
 
 # trivy:ignore:AVD-AWS-0089
-resource "aws_s3_bucket" "log" {
+resource "aws_s3_bucket" "s3logs" {
   count         = var.enable_s3_server_access_logging ? 1 : 0
-  bucket        = local.log_s3_bucket_name
+  bucket        = local.s3logs_s3_bucket_name
   force_destroy = var.s3_force_destroy
   tags = {
-    Name       = local.log_s3_bucket_name
+    Name       = local.s3logs_s3_bucket_name
     SystemName = var.system_name
     EnvType    = var.env_type
   }
 }
 
-resource "aws_s3_bucket_logging" "base" {
-  count         = length(aws_s3_bucket.log) > 0 ? 1 : 0
-  bucket        = aws_s3_bucket.base.id
-  target_bucket = aws_s3_bucket.log[count.index].id
-  target_prefix = "${aws_s3_bucket.base.id}/"
+resource "aws_s3_bucket_logging" "awslogs" {
+  count         = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
+  bucket        = aws_s3_bucket.awslogs.id
+  target_bucket = aws_s3_bucket.s3logs[count.index].id
+  target_prefix = "${aws_s3_bucket.awslogs.id}/"
 }
 
-resource "aws_s3_bucket_public_access_block" "base" {
-  bucket                  = aws_s3_bucket.base.id
+resource "aws_s3_bucket_public_access_block" "awslogs" {
+  bucket                  = aws_s3_bucket.awslogs.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_public_access_block" "log" {
-  count                   = length(aws_s3_bucket.log) > 0 ? 1 : 0
-  bucket                  = aws_s3_bucket.log[count.index].id
+resource "aws_s3_bucket_public_access_block" "s3logs" {
+  count                   = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
+  bucket                  = aws_s3_bucket.s3logs[count.index].id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "base" {
-  bucket = aws_s3_bucket.base.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "awslogs" {
+  bucket = aws_s3_bucket.awslogs.id
   rule {
     bucket_key_enabled = true
     apply_server_side_encryption_by_default {
@@ -55,9 +55,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "base" {
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "log" {
-  count  = length(aws_s3_bucket.log) > 0 ? 1 : 0
-  bucket = aws_s3_bucket.log[count.index].id
+resource "aws_s3_bucket_server_side_encryption_configuration" "s3logs" {
+  count  = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.s3logs[count.index].id
   rule {
     bucket_key_enabled = true
     apply_server_side_encryption_by_default {
@@ -67,23 +67,23 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log" {
   }
 }
 
-resource "aws_s3_bucket_versioning" "base" {
-  bucket = aws_s3_bucket.base.id
+resource "aws_s3_bucket_versioning" "awslogs" {
+  bucket = aws_s3_bucket.awslogs.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_versioning" "log" {
-  count  = length(aws_s3_bucket.log) > 0 ? 1 : 0
-  bucket = aws_s3_bucket.log[count.index].id
+resource "aws_s3_bucket_versioning" "s3logs" {
+  count  = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.s3logs[count.index].id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "base" {
-  bucket = aws_s3_bucket.base.id
+resource "aws_s3_bucket_lifecycle_configuration" "awslogs" {
+  bucket = aws_s3_bucket.awslogs.id
   rule {
     status = "Enabled"
     id     = "Move-to-Intelligent-Tiering-after-0day"
@@ -104,9 +104,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "base" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "log" {
-  count  = length(aws_s3_bucket.log) > 0 ? 1 : 0
-  bucket = aws_s3_bucket.log[count.index].id
+resource "aws_s3_bucket_lifecycle_configuration" "s3logs" {
+  count  = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.s3logs[count.index].id
   rule {
     status = "Enabled"
     id     = "Move-to-Intelligent-Tiering-after-0day"
@@ -127,8 +127,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "log" {
   }
 }
 
-resource "aws_s3_bucket_policy" "base" {
-  bucket = aws_s3_bucket.base.id
+resource "aws_s3_bucket_policy" "awslogs" {
+  bucket = aws_s3_bucket.awslogs.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -142,7 +142,7 @@ resource "aws_s3_bucket_policy" "base" {
           "s3:GetBucketAcl",
           "s3:ListBucket"
         ]
-        Resource = aws_s3_bucket.base.arn
+        Resource = aws_s3_bucket.awslogs.arn
         Condition = {
           ArnLike = {
             "aws:SourceArn" = "arn:aws:cloudtrail:*:${local.account_id}:trail/*"
@@ -156,7 +156,7 @@ resource "aws_s3_bucket_policy" "base" {
           Service = "cloudtrail.amazonaws.com"
         }
         Action   = ["s3:PutObject"]
-        Resource = ["${aws_s3_bucket.base.arn}/${var.cloudtrail_s3_key_prefix}/AWSLogs/${local.account_id}/*"]
+        Resource = ["${aws_s3_bucket.awslogs.arn}/${var.cloudtrail_s3_key_prefix}/AWSLogs/${local.account_id}/*"]
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
@@ -176,7 +176,7 @@ resource "aws_s3_bucket_policy" "base" {
           "s3:GetBucketAcl",
           "s3:ListBucket"
         ]
-        Resource = [aws_s3_bucket.base.arn]
+        Resource = [aws_s3_bucket.awslogs.arn]
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = local.account_id
@@ -190,7 +190,7 @@ resource "aws_s3_bucket_policy" "base" {
           Service = "config.amazonaws.com"
         }
         Action   = ["s3:PutObject"]
-        Resource = ["${aws_s3_bucket.base.arn}/${var.config_s3_key_prefix}/AWSLogs/${local.account_id}/Config/*"]
+        Resource = ["${aws_s3_bucket.awslogs.arn}/${var.config_s3_key_prefix}/AWSLogs/${local.account_id}/Config/*"]
         Condition = {
           StringEquals = {
             "s3:x-amz-acl"      = "bucket-owner-full-control"
@@ -202,12 +202,12 @@ resource "aws_s3_bucket_policy" "base" {
   })
 }
 
-resource "aws_s3_bucket_policy" "log" {
-  count  = length(aws_s3_bucket.log) > 0 ? 1 : 0
-  bucket = aws_s3_bucket.log[count.index].id
+resource "aws_s3_bucket_policy" "s3logs" {
+  count  = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.s3logs[count.index].id
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "${aws_s3_bucket.log[count.index].id}-policy"
+    Id      = "${aws_s3_bucket.s3logs[count.index].id}-policy"
     Statement = [
       {
         Sid    = "S3PutS3ServerAccessLogs"
@@ -216,7 +216,7 @@ resource "aws_s3_bucket_policy" "log" {
           Service = "logging.s3.amazonaws.com"
         }
         Action   = ["s3:PutObject"]
-        Resource = "${aws_s3_bucket.log[count.index].arn}/*"
+        Resource = "${aws_s3_bucket.s3logs[count.index].arn}/*"
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = local.account_id
