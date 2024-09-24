@@ -47,46 +47,53 @@ resource "aws_iam_role" "config" {
       }
     ]
   })
-  inline_policy {
-    name = "${var.system_name}-${var.env_type}-config-iam-role-policy"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Sid      = "ConfigGetS3BucketAcl"
-          Effect   = "Allow"
-          Action   = ["s3:GetBucketAcl"]
-          Resource = ["arn:aws:s3:::${var.s3_bucket_id}"]
-        },
-        {
-          Sid      = "ConfigPutS3Objects"
-          Effect   = "Allow"
-          Action   = ["s3:PutObject"]
-          Resource = ["arn:aws:s3:::${var.s3_bucket_id}/${var.config_s3_key_prefix}/AWSLogs/${local.account_id}/Config/*"]
-          Condition = {
-            StringEquals = {
-              "s3:x-amz-acl"      = "bucket-owner-full-control"
-              "aws:SourceAccount" = local.account_id
-            }
-          }
-        },
-        {
-          Sid    = "ConfigEncryptAndDecryptS3Objects"
-          Effect = "Allow"
-          Action = [
-            "kms:Decrypt",
-            "kms:GenerateDataKey"
-          ]
-          Resource = var.s3_kms_key_arn
-          Condition = {
-            StringEquals = {
-              "aws:SourceAccount" = local.account_id
-            }
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-config-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
+}
+
+resource "aws_iam_role_policy" "config" {
+  name = "${var.system_name}-${var.env_type}-config-iam-role-policy"
+  role = aws_iam_role.config.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "ConfigGetS3BucketAcl"
+        Effect   = "Allow"
+        Action   = ["s3:GetBucketAcl"]
+        Resource = ["arn:aws:s3:::${var.s3_bucket_id}"]
+      },
+      {
+        Sid      = "ConfigPutS3Objects"
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = ["arn:aws:s3:::${var.s3_bucket_id}/${var.config_s3_key_prefix}/AWSLogs/${local.account_id}/Config/*"]
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl"      = "bucket-owner-full-control"
+            "aws:SourceAccount" = local.account_id
           }
         }
-      ]
-    })
-  }
+      },
+      {
+        Sid    = "ConfigEncryptAndDecryptS3Objects"
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
+        ]
+        Resource = var.s3_kms_key_arn
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = local.account_id
+          }
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_config_config_rule" "root_mfa" {
@@ -97,6 +104,11 @@ resource "aws_config_config_rule" "root_mfa" {
     owner             = "AWS"
     source_identifier = "ROOT_ACCOUNT_MFA_ENABLED"
   }
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-config-root-mfa-rule"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
 }
 
 resource "aws_config_config_rule" "user_mfa" {
@@ -106,5 +118,10 @@ resource "aws_config_config_rule" "user_mfa" {
   source {
     owner             = "AWS"
     source_identifier = var.allow_non_console_access_without_mfa ? "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS" : "IAM_USER_MFA_ENABLED"
+  }
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-config-user-mfa-rule"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }

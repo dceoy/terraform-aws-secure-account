@@ -43,25 +43,27 @@ resource "aws_iam_role" "cloudformation_stackset_administration" {
       }
     ]
   })
-  inline_policy {
-    name = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role-policy"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Sid      = "CloudFormationStackSetAdministration"
-          Effect   = "Allow"
-          Action   = ["sts:AssumeRole"]
-          Resource = [aws_iam_role.cloudformation_stackset_execution.arn]
-        }
-      ]
-    })
-  }
   tags = {
     Name       = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role"
     SystemName = var.system_name
     EnvType    = var.env_type
   }
+}
+
+resource "aws_iam_role_policy" "cloudformation_stackset_administration" {
+  name = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role-policy"
+  role = aws_iam_role.cloudformation_stackset_administration.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "CloudFormationStackSetAdministration"
+        Effect   = "Allow"
+        Action   = ["sts:AssumeRole"]
+        Resource = [aws_iam_role.cloudformation_stackset_execution.arn]
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role" "cloudformation_stackset_execution" {

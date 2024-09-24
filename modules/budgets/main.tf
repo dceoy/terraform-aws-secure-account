@@ -12,6 +12,11 @@ resource "aws_budgets_budget" "cost" {
     threshold_type            = "PERCENTAGE"
     subscriber_sns_topic_arns = [aws_sns_topic.budgets.arn]
   }
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-budgets-budget"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
 }
 
 resource "aws_sns_topic" "budgets" {
