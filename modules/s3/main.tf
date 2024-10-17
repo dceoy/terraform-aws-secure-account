@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "awslogs" {
   }
 }
 
-# trivy:ignore:AVD-AWS-0089
+# trivy:ignore:avd-aws-0089
 resource "aws_s3_bucket" "s3logs" {
   count         = var.enable_s3_server_access_logging ? 1 : 0
   bucket        = local.s3logs_s3_bucket_name

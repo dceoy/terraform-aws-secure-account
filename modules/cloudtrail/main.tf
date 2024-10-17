@@ -1,4 +1,4 @@
-# trivy:ignore:AVD-AWS-0162
+# trivy:ignore:avd-aws-0162
 resource "aws_cloudtrail" "trail" {
   name                          = "${var.system_name}-${var.env_type}-cloudtrail-trail"
   enable_logging                = true
