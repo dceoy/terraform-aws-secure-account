@@ -1,6 +1,7 @@
 resource "aws_chatbot_slack_channel_configuration" "slack" {
+  count              = var.chatbot_slack_workspace_id != null ? 1 : 0
   configuration_name = "${var.system_name}-${var.env_type}-chatbot-slack-channel-configuration"
-  iam_role_arn       = aws_iam_role.slack.arn
+  iam_role_arn       = aws_iam_role.slack[count.index].arn
   slack_channel_id   = var.chatbot_slack_channel_id
   slack_team_id      = var.chatbot_slack_workspace_id
   sns_topic_arns     = var.sns_topic_arns
@@ -13,6 +14,7 @@ resource "aws_chatbot_slack_channel_configuration" "slack" {
 }
 
 resource "aws_iam_role" "slack" {
+  count                 = var.chatbot_slack_workspace_id != null ? 1 : 0
   name                  = "${var.system_name}-${var.env_type}-chatbot-iam-role"
   description           = "Chatbot IAM role"
   force_detach_policies = var.iam_role_force_detach_policies
