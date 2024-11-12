@@ -31,5 +31,11 @@ variable "chatbot_slack_workspace_id" {
 variable "chatbot_slack_channel_id" {
   description = "Chatbot Slack channel ID"
   type        = string
-  default     = "awschatbot"
+  default     = null
+}
+
+variable "guardrail_policy_arns" {
+  description = "List of IAM policy ARNs that are applied as channel guardrails"
+  type        = list(string)
+  default     = []
 }
