@@ -84,12 +84,16 @@ resource "aws_iam_role" "cloudformation_stackset_execution" {
       }
     ]
   })
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   tags = {
     Name       = "${var.system_name}-${var.env_type}-cloudformation-stackset-execution-iam-role"
     SystemName = var.system_name
     EnvType    = var.env_type
   }
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "cloudformation_stackset_execution" {
+  role_name   = aws_iam_role.cloudformation_stackset_execution.name
+  policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
 
 resource "aws_iam_role" "administrator" {
@@ -111,12 +115,16 @@ resource "aws_iam_role" "administrator" {
       }
     ]
   })
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   tags = {
     Name       = "${var.system_name}-${var.env_type}-administrator-iam-role"
     SystemName = var.system_name
     EnvType    = var.env_type
   }
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "administrator" {
+  role_name   = aws_iam_role.administrator.name
+  policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
 
 resource "aws_iam_policy" "administrator" {
@@ -423,10 +431,15 @@ resource "aws_iam_role" "github" {
       }
     ]
   })
-  managed_policy_arns = each.value
   tags = {
     Name       = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-${each.key}-iam-role"
     SystemName = var.system_name
     EnvType    = var.env_type
   }
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "github" {
+  for_each    = aws_iam_role.github
+  role_name   = each.value.name
+  policy_arns = var.github_iam_oidc_provider_iam_policy_arns[each.key]
 }

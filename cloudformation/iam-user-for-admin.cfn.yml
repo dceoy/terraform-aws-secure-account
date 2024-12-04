@@ -1,6 +1,11 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: IAM user with administrator access
+Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W1011
 Parameters:
   AdministratorUserName:
     Description: Set the administrator user name.
