@@ -78,6 +78,11 @@ resource "aws_kms_key" "custom" {
           "kms:GenerateDataKey*"
         ]
         Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = local.account_id
+          }
+        }
       },
       {
         Sid    = "BudgetsEncryptAndDecryptBudgetsNotifications"
