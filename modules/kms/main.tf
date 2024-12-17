@@ -68,7 +68,7 @@ resource "aws_kms_key" "custom" {
         }
       },
       {
-        Sid    = "EventsEncryptAndDecryptGuardDutyFindings"
+        Sid    = "EventsEncryptAndDecryptSecurityHubNotifications"
         Effect = "Allow"
         Principal = {
           Service = "events.amazonaws.com"
