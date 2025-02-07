@@ -3,8 +3,8 @@ resource "aws_iam_account_alias" "account" {
   account_alias = var.account_alias
 }
 
-# trivy:ignore:avd-aws-0056
-# trivy:ignore:avd-aws-0062
+# trivy:ignore:AVD-AWS-0056
+# trivy:ignore:AVD-AWS-0062
 resource "aws_iam_account_password_policy" "strict" {
   minimum_password_length        = 14
   allow_users_to_change_password = true
@@ -174,7 +174,7 @@ resource "aws_iam_policy" "developer" {
   })
 }
 
-# trivy:ignore:avd-aws-0057
+# trivy:ignore:AVD-AWS-0057
 resource "aws_iam_policy" "mfa" {
   name        = "${var.system_name}-${var.env_type}-user-mfa-iam-policy"
   description = "User MFA IAM policy"
@@ -246,7 +246,7 @@ resource "aws_iam_policy" "mfa" {
   }
 }
 
-# trivy:ignore:avd-aws-0057
+# trivy:ignore:AVD-AWS-0057
 resource "aws_iam_policy" "activate" {
   name        = "${var.system_name}-${var.env_type}-activate-fullaccess-iam-policy"
   description = "Activate full access IAM policy"
@@ -264,25 +264,25 @@ resource "aws_iam_policy" "activate" {
   })
 }
 
-# trivy:ignore:avd-aws-0123
+# trivy:ignore:AVD-AWS-0123
 resource "aws_iam_group" "administrator" {
   name = "${var.system_name}-${var.env_type}-administrator-iam-group"
   path = "/"
 }
 
-# trivy:ignore:avd-aws-0123
+# trivy:ignore:AVD-AWS-0123
 resource "aws_iam_group" "developer" {
   name = "${var.system_name}-${var.env_type}-developer-iam-group"
   path = "/"
 }
 
-# trivy:ignore:avd-aws-0123
+# trivy:ignore:AVD-AWS-0123
 resource "aws_iam_group" "readonly" {
   name = "${var.system_name}-${var.env_type}-readonly-iam-group"
   path = "/"
 }
 
-# trivy:ignore:avd-aws-0123
+# trivy:ignore:AVD-AWS-0123
 resource "aws_iam_group" "activate" {
   name = "${var.system_name}-${var.env_type}-activate-iam-group"
   path = "/"
