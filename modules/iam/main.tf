@@ -51,7 +51,7 @@ resource "aws_iam_role" "cloudformation_stackset_administration" {
 }
 
 resource "aws_iam_role_policy" "cloudformation_stackset_administration" {
-  name = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-role-policy"
+  name = "${var.system_name}-${var.env_type}-cloudformation-stackset-administration-iam-policy"
   role = aws_iam_role.cloudformation_stackset_administration.id
   policy = jsonencode({
     Version = "2012-10-17"

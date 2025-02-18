@@ -55,7 +55,7 @@ resource "aws_iam_role" "config" {
 }
 
 resource "aws_iam_role_policy" "config" {
-  name = "${var.system_name}-${var.env_type}-config-iam-role-policy"
+  name = "${var.system_name}-${var.env_type}-config-iam-policy"
   role = aws_iam_role.config.id
   policy = jsonencode({
     Version = "2012-10-17"
