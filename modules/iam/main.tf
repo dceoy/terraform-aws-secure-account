@@ -224,11 +224,15 @@ resource "aws_iam_policy" "mfa" {
         Effect = "Deny"
         NotAction = [
           "iam:CreateVirtualMFADevice",
+          "iam:DeactivateMFADevice",
           "iam:EnableMFADevice",
+          "iam:GetMFADevice",
           "iam:ListMFADevices",
           "iam:ListUsers",
           "iam:ListVirtualMFADevices",
-          "iam:ResyncMFADevice"
+          "iam:ResyncMFADevice",
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
         ]
         Resource = "*"
         Condition = {
