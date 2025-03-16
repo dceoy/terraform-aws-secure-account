@@ -53,6 +53,11 @@ output "readonly_iam_group_arn" {
   value       = module.iam.readonly_iam_group_arn
 }
 
+output "billing_iam_group_arn" {
+  description = "Billing IAM group ARN"
+  value       = module.iam.billing_iam_group_arn
+}
+
 output "activate_iam_group_arn" {
   description = "Activate IAM user names"
   value       = module.iam.activate_iam_group_arn

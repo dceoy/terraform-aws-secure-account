@@ -40,6 +40,12 @@ variable "readonly_iam_user_names" {
   default     = []
 }
 
+variable "billing_iam_user_names" {
+  description = "Billing IAM user names"
+  type        = list(string)
+  default     = []
+}
+
 variable "activate_iam_user_names" {
   description = "Activate IAM user names"
   type        = list(string)

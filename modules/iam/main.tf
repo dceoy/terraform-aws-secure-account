@@ -283,6 +283,12 @@ resource "aws_iam_group" "readonly" {
 }
 
 # trivy:ignore:AVD-AWS-0123
+resource "aws_iam_group" "billing" {
+  name = "${var.system_name}-${var.env_type}-billing-iam-group"
+  path = "/"
+}
+
+# trivy:ignore:AVD-AWS-0123
 resource "aws_iam_group" "activate" {
   name = "${var.system_name}-${var.env_type}-activate-iam-group"
   path = "/"
@@ -337,6 +343,11 @@ resource "aws_iam_group_policy_attachment" "credential" {
   policy_arn = "arn:aws:iam::aws:policy/IAMSelfManageServiceSpecificCredentials"
 }
 
+resource "aws_iam_group_policy_attachment" "billing" {
+  group      = aws_iam_group.billing.name
+  policy_arn = "arn:aws:iam::aws:policy/job-function/Billing"
+}
+
 resource "aws_iam_group_policy_attachment" "activate" {
   group      = aws_iam_group.activate.name
   policy_arn = aws_iam_policy.activate.arn
@@ -379,6 +390,13 @@ resource "aws_iam_user_group_membership" "readonly" {
   for_each   = toset(var.readonly_iam_user_names)
   user       = each.key
   groups     = [aws_iam_group.readonly.name]
+}
+
+resource "aws_iam_user_group_membership" "billing" {
+  depends_on = [aws_iam_user.users]
+  for_each   = toset(var.billing_iam_user_names)
+  user       = each.key
+  groups     = [aws_iam_group.billing.name]
 }
 
 resource "aws_iam_user_group_membership" "activate" {

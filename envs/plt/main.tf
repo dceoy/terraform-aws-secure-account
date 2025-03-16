@@ -6,6 +6,7 @@ module "iam" {
   administrator_iam_user_names             = var.administrator_iam_user_names
   developer_iam_user_names                 = var.developer_iam_user_names
   readonly_iam_user_names                  = var.readonly_iam_user_names
+  billing_iam_user_names                   = var.billing_iam_user_names
   activate_iam_user_names                  = var.activate_iam_user_names
   iam_role_max_session_duration            = var.iam_role_max_session_duration
   iam_role_force_detach_policies           = var.iam_role_force_detach_policies

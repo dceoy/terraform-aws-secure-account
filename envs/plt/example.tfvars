@@ -9,6 +9,7 @@ force_destroy                            = true
 administrator_iam_user_names             = []
 developer_iam_user_names                 = []
 readonly_iam_user_names                  = []
+billing_iam_user_names                   = []
 activate_iam_user_names                  = []
 iam_role_max_session_duration            = 43200
 iam_role_force_detach_policies           = true

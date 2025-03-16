@@ -53,6 +53,11 @@ output "readonly_iam_group_arn" {
   value       = aws_iam_group.readonly.arn
 }
 
+output "billing_iam_group_arn" {
+  description = "Billing IAM group ARN"
+  value       = aws_iam_group.billing.arn
+}
+
 output "activate_iam_group_arn" {
   description = "Activate IAM group ARN"
   value       = aws_iam_group.activate.arn
