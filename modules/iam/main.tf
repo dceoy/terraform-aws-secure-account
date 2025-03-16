@@ -264,6 +264,26 @@ resource "aws_iam_policy" "activate" {
   })
 }
 
+resource "aws_iam_policy" "bedrock" {
+  name        = "${var.system_name}-${var.env_type}-bedrock-invocation-iam-policy"
+  description = "Bedrock model invocation IAM policy"
+  path        = "/"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowBedrockModelInvocation"
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ]
+        Resource = ["arn:aws:bedrock:*::foundation-model/*"]
+      }
+    ]
+  })
+}
+
 # trivy:ignore:AVD-AWS-0123
 resource "aws_iam_group" "administrator" {
   name = "${var.system_name}-${var.env_type}-administrator-iam-group"
@@ -302,6 +322,15 @@ resource "aws_iam_group_policy_attachment" "administrator" {
 resource "aws_iam_group_policy_attachment" "developer" {
   group      = aws_iam_group.developer.name
   policy_arn = aws_iam_policy.developer.arn
+}
+
+resource "aws_iam_group_policy_attachment" "bedrock" {
+  for_each = toset([
+    aws_iam_group.administrator.name,
+    aws_iam_group.developer.name
+  ])
+  group      = each.key
+  policy_arn = aws_iam_policy.bedrock.arn
 }
 
 resource "aws_iam_group_policy_attachment" "readonly" {
