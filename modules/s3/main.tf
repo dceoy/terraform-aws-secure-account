@@ -101,6 +101,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "awslogs" {
       days                         = var.s3_expiration_days
       expired_object_delete_marker = var.s3_expired_object_delete_marker
     }
+    filter {
+      prefix = ""
+    }
   }
 }
 
@@ -123,6 +126,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3logs" {
     expiration {
       days                         = var.s3_expiration_days
       expired_object_delete_marker = var.s3_expired_object_delete_marker
+    }
+    filter {
+      prefix = ""
     }
   }
 }

@@ -278,7 +278,7 @@ resource "aws_iam_policy" "bedrock" {
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream"
         ]
-        Resource = ["arn:aws:bedrock:*::foundation-model/*"]
+        Resource = "*"
       }
     ]
   })
