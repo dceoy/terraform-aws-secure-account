@@ -220,7 +220,7 @@ resource "aws_iam_policy" "mfa" {
         }
       },
       {
-        Sid    = "BlockMostAccessUnlessSignedInWithMFA"
+        Sid    = "BlockIamAccessUnlessSignedInWithMFA"
         Effect = "Deny"
         NotAction = [
           "iam:CreateVirtualMFADevice",
@@ -230,11 +230,9 @@ resource "aws_iam_policy" "mfa" {
           "iam:ListMFADevices",
           "iam:ListUsers",
           "iam:ListVirtualMFADevices",
-          "iam:ResyncMFADevice",
-          "bedrock:InvokeModel",
-          "bedrock:InvokeModelWithResponseStream"
+          "iam:ResyncMFADevice"
         ]
-        Resource = "*"
+        Resource = ["arn:aws:iam::*:*"]
         Condition = {
           BoolIfExists = {
             "aws:MultiFactorAuthPresent" = "false"
