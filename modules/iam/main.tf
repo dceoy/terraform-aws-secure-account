@@ -249,13 +249,19 @@ resource "aws_iam_policy" "mfa" {
 }
 
 # trivy:ignore:AVD-AWS-0057
-resource "aws_iam_policy" "activate" {
-  name        = "${var.system_name}-${var.env_type}-activate-fullaccess-iam-policy"
-  description = "Activate full access IAM policy"
+resource "aws_iam_policy" "account" {
+  name        = "${var.system_name}-${var.env_type}-account-fullaccess-iam-policy"
+  description = "Account full access IAM policy"
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      {
+        Sid      = "AllowAccountActions"
+        Effect   = "Allow"
+        Action   = ["account:*"]
+        Resource = "*"
+      },
       {
         Sid      = "AllowActivateActions"
         Effect   = "Allow"
@@ -311,8 +317,8 @@ resource "aws_iam_group" "billing" {
 }
 
 # trivy:ignore:AVD-AWS-0123
-resource "aws_iam_group" "activate" {
-  name = "${var.system_name}-${var.env_type}-activate-iam-group"
+resource "aws_iam_group" "account" {
+  name = "${var.system_name}-${var.env_type}-account-iam-group"
   path = "/"
 }
 
@@ -379,9 +385,9 @@ resource "aws_iam_group_policy_attachment" "billing" {
   policy_arn = "arn:aws:iam::aws:policy/job-function/Billing"
 }
 
-resource "aws_iam_group_policy_attachment" "activate" {
-  group      = aws_iam_group.activate.name
-  policy_arn = aws_iam_policy.activate.arn
+resource "aws_iam_group_policy_attachment" "account" {
+  group      = aws_iam_group.account.name
+  policy_arn = aws_iam_policy.account.arn
 }
 
 resource "aws_iam_user" "users" {
@@ -430,11 +436,11 @@ resource "aws_iam_user_group_membership" "billing" {
   groups     = [aws_iam_group.billing.name]
 }
 
-resource "aws_iam_user_group_membership" "activate" {
+resource "aws_iam_user_group_membership" "account" {
   depends_on = [aws_iam_user.users]
-  for_each   = toset(var.activate_iam_user_names)
+  for_each   = toset(var.account_iam_user_names)
   user       = each.key
-  groups     = [aws_iam_group.activate.name]
+  groups     = [aws_iam_group.account.name]
 }
 
 resource "aws_iam_openid_connect_provider" "github" {

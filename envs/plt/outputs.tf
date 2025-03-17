@@ -33,9 +33,9 @@ output "user_mfa_iam_policy_arn" {
   value       = module.iam.user_mfa_iam_policy_arn
 }
 
-output "activate_iam_policy_arn" {
-  description = "Activate IAM policy ARN"
-  value       = module.iam.activate_iam_policy_arn
+output "account_iam_policy_arn" {
+  description = "Account IAM policy ARN"
+  value       = module.iam.account_iam_policy_arn
 }
 
 output "administrator_iam_group_arn" {
@@ -54,13 +54,13 @@ output "readonly_iam_group_arn" {
 }
 
 output "billing_iam_group_arn" {
-  description = "Billing IAM group ARN"
+  description = "Billing manager IAM group ARN"
   value       = module.iam.billing_iam_group_arn
 }
 
-output "activate_iam_group_arn" {
-  description = "Activate IAM user names"
-  value       = module.iam.activate_iam_group_arn
+output "account_iam_group_arn" {
+  description = "Account manager IAM user names"
+  value       = module.iam.account_iam_group_arn
 }
 
 output "iam_user_ids" {

@@ -33,9 +33,9 @@ output "user_mfa_iam_policy_arn" {
   value       = aws_iam_policy.mfa.arn
 }
 
-output "activate_iam_policy_arn" {
-  description = "Activate IAM policy ARN"
-  value       = aws_iam_policy.activate.arn
+output "account_iam_policy_arn" {
+  description = "Account IAM policy ARN"
+  value       = aws_iam_policy.account.arn
 }
 
 output "administrator_iam_group_arn" {
@@ -54,13 +54,13 @@ output "readonly_iam_group_arn" {
 }
 
 output "billing_iam_group_arn" {
-  description = "Billing IAM group ARN"
+  description = "Billing manager IAM group ARN"
   value       = aws_iam_group.billing.arn
 }
 
-output "activate_iam_group_arn" {
-  description = "Activate IAM group ARN"
-  value       = aws_iam_group.activate.arn
+output "account_iam_group_arn" {
+  description = "Account manager IAM group ARN"
+  value       = aws_iam_group.account.arn
 }
 
 output "iam_user_ids" {

@@ -41,13 +41,13 @@ variable "readonly_iam_user_names" {
 }
 
 variable "billing_iam_user_names" {
-  description = "Billing IAM user names"
+  description = "Billing manager IAM user names"
   type        = list(string)
   default     = []
 }
 
-variable "activate_iam_user_names" {
-  description = "Activate IAM user names"
+variable "account_iam_user_names" {
+  description = "Account manager IAM user names"
   type        = list(string)
   default     = []
 }
