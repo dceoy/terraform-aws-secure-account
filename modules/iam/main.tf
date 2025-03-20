@@ -459,7 +459,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 resource "aws_iam_role" "github" {
-  for_each              = length(aws_iam_openid_connect_provider.github) > 0 ? var.github_iam_oidc_provider_iam_policy_arns : {}
+  for_each              = toset(length(aws_iam_openid_connect_provider.github) > 0 ? concat(keys(var.github_iam_oidc_provider_iam_policy_arns), ["llm"]) : [])
   name                  = "${var.system_name}-${var.env_type}-github-iam-oidc-provider-${each.key}-iam-role"
   description           = "GitHub OIDC provider ${each.key} IAM role"
   force_detach_policies = var.iam_role_force_detach_policies
@@ -496,5 +496,5 @@ resource "aws_iam_role" "github" {
 resource "aws_iam_role_policy_attachments_exclusive" "github" {
   for_each    = aws_iam_role.github
   role_name   = each.value.name
-  policy_arns = var.github_iam_oidc_provider_iam_policy_arns[each.key]
+  policy_arns = each.key == "llm" ? lookup(var.github_iam_oidc_provider_iam_policy_arns, "llm", [aws_iam_policy.bedrock.arn]) : var.github_iam_oidc_provider_iam_policy_arns[each.key]
 }
