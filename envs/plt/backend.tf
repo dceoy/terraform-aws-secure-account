@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.7.2"
+  required_version = ">= 1.11.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -16,6 +16,5 @@ terraform {
     # key            = ""
     # region         = "us-east-1"
     # use_lockfile   = true
-    # dynamodb_table = ""
   }
 }
