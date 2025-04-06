@@ -17,12 +17,12 @@ Installation
 
 2.  Install [AWS CLI](https://aws.amazon.com/cli/) and set `~/.aws/config` and `~/.aws/credentials`.
 
-3.  Create a S3 bucket and a DynamoDB table for Terraform.
+3.  Create a S3 bucket for Terraform.
 
     ```sh
     $ aws cloudformation create-stack \
-        --stack-name s3-and-dynamodb-for-terraform \
-        --template-body file://cloudformation/s3-and-dynamodb-for-terraform.cfn.yml
+        --stack-name s3-for-terraform \
+        --template-body file://cloudformation/s3-for-terraform.cfn.yml
     ```
 
 4.  Install [Terraform](https://www.terraform.io/).
