@@ -34,6 +34,7 @@ module "s3" {
   s3_force_destroy                          = var.s3_force_destroy
   s3_noncurrent_version_expiration_days     = var.s3_noncurrent_version_expiration_days
   s3_abort_incomplete_multipart_upload_days = var.s3_abort_incomplete_multipart_upload_days
+  s3_expired_object_delete_marker           = var.s3_expired_object_delete_marker
   enable_s3_server_access_logging           = var.enable_s3_server_access_logging
   enable_s3_storage_lens                    = var.enable_s3_storage_lens
 }
