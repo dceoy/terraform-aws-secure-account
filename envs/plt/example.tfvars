@@ -63,5 +63,7 @@ budget_time_unit           = "ANNUALLY"
 budget_limit_amount_in_usd = 1000
 
 # AWS Chatbot
-chatbot_slack_workspace_id = null
-chatbot_slack_channel_id   = "awschatbot"
+chatbot_slack_workspace_id    = null
+chatbot_slack_channel_id      = null
+chatbot_guardrail_policy_arns = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
+chatbot_logging_level         = "NONE"

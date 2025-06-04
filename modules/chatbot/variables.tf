@@ -42,7 +42,7 @@ variable "chatbot_logging_level" {
   description = "Logging levels include ERROR, INFO, or NONE"
   type        = string
   default     = "NONE"
-  validate {
+  validation {
     condition     = var.chatbot_logging_level == "ERROR" || var.chatbot_logging_level == "INFO" || var.chatbot_logging_level == "NONE"
     error_message = "Logging level must be one of ERROR, INFO, or NONE."
   }

@@ -105,8 +105,10 @@ module "chatbot" {
     length(module.budgets) > 0 ? module.budgets[0].budgets_sns_topic_arn : null,
     length(module.securityhub) > 0 ? module.securityhub[0].securityhub_sns_topic_arn : null
   ])
-  chatbot_slack_workspace_id = var.chatbot_slack_workspace_id
-  chatbot_slack_channel_id   = var.chatbot_slack_channel_id
+  chatbot_slack_workspace_id    = var.chatbot_slack_workspace_id
+  chatbot_slack_channel_id      = var.chatbot_slack_channel_id
+  chatbot_guardrail_policy_arns = var.chatbot_guardrail_policy_arns
+  chatbot_logging_level         = var.chatbot_logging_level
 }
 
 module "ecr" {
