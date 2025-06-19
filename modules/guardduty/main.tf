@@ -22,10 +22,10 @@ resource "aws_cloudformation_stack_set" "guardduty" {
 }
 
 resource "aws_cloudformation_stack_set_instance" "guardduty" {
-  for_each       = local.available_regions
-  account_id     = local.account_id
-  region         = each.key
-  stack_set_name = aws_cloudformation_stack_set.guardduty.name
+  for_each                  = local.available_regions
+  account_id                = local.account_id
+  stack_set_instance_region = each.key
+  stack_set_name            = aws_cloudformation_stack_set.guardduty.name
   operation_preferences {
     region_concurrency_type   = "PARALLEL"
     max_concurrent_percentage = 100
