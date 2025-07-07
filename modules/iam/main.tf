@@ -201,6 +201,7 @@ resource "aws_iam_policy" "mfa" {
         Sid    = "AllowUserToManageTheirOwnMFA"
         Effect = "Allow"
         Action = [
+          "iam:ChangePassword",
           "iam:EnableMFADevice",
           "iam:GetMFADevice",
           "iam:ListMFADevices",
@@ -223,6 +224,7 @@ resource "aws_iam_policy" "mfa" {
         Sid    = "BlockIamAccessUnlessSignedInWithMFA"
         Effect = "Deny"
         NotAction = [
+          "iam:ChangePassword",
           "iam:CreateVirtualMFADevice",
           "iam:DeactivateMFADevice",
           "iam:EnableMFADevice",
@@ -279,6 +281,12 @@ resource "aws_iam_policy" "bedrock" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      {
+        Sid      = "AllowBedrockFoundationModelList"
+        Effect   = "Allow"
+        Action   = ["bedrock:ListFoundationModels"]
+        Resource = "*"
+      },
       {
         Sid    = "AllowBedrockModelInvocation"
         Effect = "Allow"
