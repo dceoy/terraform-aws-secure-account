@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "terraform fmt -recursive . && terragrunt hcl format --diff --working-dir . && tflint --recursive --chdir=."
+          }
+        ]
+      }
+    ]
+  }
+}
