@@ -90,5 +90,28 @@ The `plt` environment is configured for:
 - Region: us-east-1
 - Account: clinical-dev
 - Security services: All enabled (GuardDuty, Security Hub, Config, CloudTrail)
-- Budget limit: $5,000 annually
+- Budget limit: `$5,000` annually
 - Slack notifications: Configured for security and budget alerts
+
+## Web Search Instructions
+
+For tasks requiring web search, always use `gemini` command instead of the built-in web search tool.
+
+### Usage
+
+```sh
+# Basic search query
+gemini --sandbox --prompt "WebSearch: <query>"
+
+# Example: Search for latest news
+gemini --sandbox --prompt "WebSearch: What are the latest developments in AI?"
+```
+
+### Policy
+
+When users request information that requires web search:
+
+1. Use `gemini --sandbox --prompt` command via terminal
+2. Parse and present the Gemini response appropriately
+
+This ensures consistent and reliable web search results through the Gemini API.
