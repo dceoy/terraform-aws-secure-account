@@ -24,7 +24,7 @@ resource "aws_s3_bucket_logging" "awslogs" {
   count         = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
   bucket        = aws_s3_bucket.awslogs.id
   target_bucket = aws_s3_bucket.s3logs[count.index].id
-  target_prefix = "${aws_s3_bucket.awslogs.id}/"
+  target_prefix = "s3logs/${aws_s3_bucket.awslogs.id}/"
 }
 
 resource "aws_s3_bucket_public_access_block" "awslogs" {
