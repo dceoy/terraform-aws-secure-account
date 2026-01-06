@@ -1,19 +1,17 @@
-terraform-aws-secure-account
-============================
+# terraform-aws-secure-account
 
 Terraform modules for securing AWS accounts
 
 [![CI](https://github.com/dceoy/terraform-aws-secure-account/actions/workflows/ci.yml/badge.svg)](https://github.com/dceoy/terraform-aws-secure-account/actions/workflows/ci.yml)
 
-Installation
-------------
+## Installation
 
 1.  Check out the repository.
 
     ```sh
     $ git clone https://github.com/dceoy/terraform-aws-secure-account.git
     $ cd terraform-aws-secure-account
-    ````
+    ```
 
 2.  Install [AWS CLI](https://aws.amazon.com/cli/) and set `~/.aws/config` and `~/.aws/credentials`.
 
@@ -54,8 +52,7 @@ Installation
     $ terraform -chdir='envs/plt/' apply -var-file='./terraform.tfvars' -auto-approve
     ```
 
-Cleanup
--------
+## Cleanup
 
 ```sh
 $ terraform -chdir='envs/plt/' destroy -var-file='./terraform.tfvars' -auto-approve
