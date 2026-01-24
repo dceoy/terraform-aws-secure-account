@@ -11,6 +11,8 @@ module "iam" {
   iam_role_max_session_duration            = var.iam_role_max_session_duration
   iam_role_force_detach_policies           = var.iam_role_force_detach_policies
   iam_user_force_destroy                   = var.iam_user_force_destroy
+  iam_password_reuse_prevention            = var.iam_password_reuse_prevention
+  iam_password_max_age                     = var.iam_password_max_age
   enable_iam_accessanalyzer                = var.enable_iam_accessanalyzer
   github_repositories_requiring_oidc       = var.github_repositories_requiring_oidc
   github_iam_oidc_provider_iam_policy_arns = var.github_iam_oidc_provider_iam_policy_arns

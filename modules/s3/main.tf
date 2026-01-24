@@ -1,4 +1,6 @@
 resource "aws_s3_bucket" "awslogs" {
+  # checkov:skip=CKV2_AWS_62: Centralized logging buckets do not require event notifications.
+  # checkov:skip=CKV_AWS_144: Cross-region replication is managed outside this module.
   bucket        = local.awslogs_s3_bucket_name
   force_destroy = var.s3_force_destroy
   tags = {
@@ -10,6 +12,9 @@ resource "aws_s3_bucket" "awslogs" {
 
 # trivy:ignore:AVD-AWS-0089
 resource "aws_s3_bucket" "s3logs" {
+  # checkov:skip=CKV2_AWS_62: Server access log buckets do not require event notifications.
+  # checkov:skip=CKV_AWS_145: Server access log buckets use SSE-S3 to avoid KMS dependency.
+  # checkov:skip=CKV_AWS_144: Cross-region replication is managed outside this module.
   count         = var.enable_s3_server_access_logging ? 1 : 0
   bucket        = local.s3logs_s3_bucket_name
   force_destroy = var.s3_force_destroy

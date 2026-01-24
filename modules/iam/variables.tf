@@ -72,6 +72,32 @@ variable "iam_user_force_destroy" {
   default     = true
 }
 
+variable "iam_password_reuse_prevention" {
+  description = "Number of previous passwords that IAM users are prevented from reusing"
+  type        = number
+  default     = null
+  validation {
+    condition = (
+      var.iam_password_reuse_prevention == null
+      || (var.iam_password_reuse_prevention >= 1 && var.iam_password_reuse_prevention <= 24)
+    )
+    error_message = "iam_password_reuse_prevention must be null or between 1 and 24"
+  }
+}
+
+variable "iam_password_max_age" {
+  description = "Number of days before an IAM user's password expires"
+  type        = number
+  default     = null
+  validation {
+    condition = (
+      var.iam_password_max_age == null
+      || (var.iam_password_max_age >= 1 && var.iam_password_max_age <= 1095)
+    )
+    error_message = "iam_password_max_age must be null or between 1 and 1095"
+  }
+}
+
 variable "enable_iam_accessanalyzer" {
   description = "Whether to enable IAM Access Analyzer"
   type        = bool
