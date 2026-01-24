@@ -7,10 +7,15 @@ Parameters:
     Type: String
     Default: tfstate
 Resources:
-  # trivy:ignore:avd-aws-0089
-  # trivy:ignore:avd-aws-0132
+  # trivy:ignore:AVD-AWS-0089
+  # trivy:ignore:AVD-AWS-0132
   TerraformStateS3Bucket:
     Type: AWS::S3::Bucket
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_18
+            comment: Access logs are handled by centralized logging buckets.
     # DeletionPolicy: Retain
     # UpdateReplacePolicy: Retain
     Properties:
