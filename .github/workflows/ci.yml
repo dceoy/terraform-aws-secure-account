@@ -28,7 +28,7 @@ jobs:
     uses: dceoy/gh-actions-for-devops/.github/workflows/aws-cloudformation-lint.yml@main  # zizmor: ignore[unpinned-uses]
     with:
       search-path: .
-      python-version: 3.x
+      python-version: '3.13'
   terraform-lint-and-scan:
     if: >
       github.event_name == 'push'
