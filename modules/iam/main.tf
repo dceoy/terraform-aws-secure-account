@@ -254,8 +254,8 @@ resource "aws_iam_policy" "mfa" {
 
 # trivy:ignore:AVD-AWS-0057
 resource "aws_iam_policy" "account" {
-  # checkov:skip=CKV_AWS_290: Account/activate APIs require broad permissions by design.
-  # checkov:skip=CKV_AWS_355: Account-level actions do not support resource-level constraints.
+  # checkov:skip=CKV_AWS_290:Account/activate APIs require broad permissions by design.
+  # checkov:skip=CKV_AWS_355:Account-level actions do not support resource-level constraints.
   name        = "${var.system_name}-${var.env_type}-account-fullaccess-iam-policy"
   description = "Account full access IAM policy"
   path        = "/"
@@ -279,7 +279,7 @@ resource "aws_iam_policy" "account" {
 }
 
 resource "aws_iam_policy" "bedrock" {
-  # checkov:skip=CKV_AWS_355: Bedrock invoke actions require wildcard resources.
+  # checkov:skip=CKV_AWS_355:Bedrock invoke actions require wildcard resources.
   name        = "${var.system_name}-${var.env_type}-bedrock-invocation-iam-policy"
   description = "Bedrock model invocation IAM policy"
   path        = "/"
@@ -404,7 +404,7 @@ resource "aws_iam_group_policy_attachment" "account" {
 }
 
 resource "aws_iam_user" "users" {
-  # checkov:skip=CKV_AWS_273: IAM users are required for break-glass access.
+  # checkov:skip=CKV_AWS_273:IAM users are required for break-glass access.
   for_each = toset(
     concat(
       var.administrator_iam_user_names,
