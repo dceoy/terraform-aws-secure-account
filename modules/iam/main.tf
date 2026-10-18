@@ -59,9 +59,9 @@ resource "aws_iam_role_policy" "cloudformation_stackset_administration" {
     Version = "2012-10-17"
     Statement = [
       {
+        # CloudFormation StackSets must assume its explicitly named execution role.
         Sid      = "CloudFormationStackSetAdministration"
         Effect   = "Allow"
-        # CloudFormation StackSets must assume its explicitly named execution role.
         Action   = ["sts:AssumeRole"] # nosemgrep: terraform.lang.security.iam.no-iam-creds-exposure.no-iam-creds-exposure
         Resource = [aws_iam_role.cloudformation_stackset_execution.arn]
       }
@@ -138,9 +138,9 @@ resource "aws_iam_policy" "administrator" {
     Version = "2012-10-17"
     Statement = [
       {
+        # Administrator role switching is MFA-gated and scoped to this AWS account.
         Sid      = "UserAssumeAccountRoles"
         Effect   = "Allow"
-        # Administrator role switching is MFA-gated and scoped to this AWS account.
         Action   = ["sts:AssumeRole"] # nosemgrep: terraform.lang.security.iam.no-iam-creds-exposure.no-iam-creds-exposure
         Resource = ["arn:aws:iam::${local.account_id}:role/*"]
         Condition = {
@@ -161,9 +161,9 @@ resource "aws_iam_policy" "developer" {
     Version = "2012-10-17"
     Statement = [
       {
+        # Developer role switching is MFA-gated and constrained by the role condition.
         Sid      = "UserAssumeAccountRoles"
         Effect   = "Allow"
-        # Developer role switching is MFA-gated and constrained by the role condition.
         Action   = ["sts:AssumeRole"] # nosemgrep: terraform.lang.security.iam.no-iam-creds-exposure.no-iam-creds-exposure
         Resource = ["arn:aws:iam::${local.account_id}:role/*"]
         Condition = {
