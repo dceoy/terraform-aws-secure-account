@@ -1,4 +1,4 @@
-# trivy:ignore:AVD-AWS-0162
+# trivy:ignore:AWS-0162
 resource "aws_cloudtrail" "trail" {
   # checkov:skip=CKV_AWS_252:SNS notifications are handled by an external organization trail.
   # checkov:skip=CKV2_AWS_10:CloudWatch Logs integration is handled by an external organization trail.
