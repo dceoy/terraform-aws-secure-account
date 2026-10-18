@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "awslogs" {
   }
 }
 
-# trivy:ignore:AVD-AWS-0089
+# trivy:ignore:AWS-0089
 resource "aws_s3_bucket" "s3logs" {
   # checkov:skip=CKV2_AWS_62:Server access log buckets do not require event notifications.
   # checkov:skip=CKV_AWS_145:Server access log buckets use SSE-S3 to avoid KMS dependency.
@@ -60,7 +60,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "awslogs" {
   }
 }
 
-# trivy:ignore:AVD-AWS-0132
+# trivy:ignore:AWS-0132
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3logs" {
   count  = length(aws_s3_bucket.s3logs) > 0 ? 1 : 0
   bucket = aws_s3_bucket.s3logs[count.index].id
