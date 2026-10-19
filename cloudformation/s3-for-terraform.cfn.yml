@@ -7,8 +7,8 @@ Parameters:
     Type: String
     Default: tfstate
 Resources:
-  # trivy:ignore:AVD-AWS-0089
-  # trivy:ignore:AVD-AWS-0132
+  # trivy:ignore:AWS-0089
+  # trivy:ignore:AWS-0132
   TerraformStateS3Bucket:
     Type: AWS::S3::Bucket
     Metadata:

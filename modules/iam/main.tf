@@ -3,8 +3,8 @@ resource "aws_iam_account_alias" "account" {
   account_alias = var.account_alias
 }
 
-# trivy:ignore:AVD-AWS-0056
-# trivy:ignore:AVD-AWS-0062
+# trivy:ignore:AWS-0056
+# trivy:ignore:AWS-0062
 resource "aws_iam_account_password_policy" "strict" {
   minimum_password_length        = 14
   allow_users_to_change_password = true
@@ -59,9 +59,10 @@ resource "aws_iam_role_policy" "cloudformation_stackset_administration" {
     Version = "2012-10-17"
     Statement = [
       {
+        # CloudFormation StackSets must assume its explicitly named execution role.
         Sid      = "CloudFormationStackSetAdministration"
         Effect   = "Allow"
-        Action   = ["sts:AssumeRole"]
+        Action   = ["sts:AssumeRole"] # nosemgrep: terraform.lang.security.iam.no-iam-creds-exposure.no-iam-creds-exposure
         Resource = [aws_iam_role.cloudformation_stackset_execution.arn]
       }
     ]
@@ -137,9 +138,10 @@ resource "aws_iam_policy" "administrator" {
     Version = "2012-10-17"
     Statement = [
       {
+        # Administrator role switching is MFA-gated and scoped to this AWS account.
         Sid      = "UserAssumeAccountRoles"
         Effect   = "Allow"
-        Action   = ["sts:AssumeRole"]
+        Action   = ["sts:AssumeRole"] # nosemgrep: terraform.lang.security.iam.no-iam-creds-exposure.no-iam-creds-exposure
         Resource = ["arn:aws:iam::${local.account_id}:role/*"]
         Condition = {
           Bool = {
@@ -159,9 +161,10 @@ resource "aws_iam_policy" "developer" {
     Version = "2012-10-17"
     Statement = [
       {
+        # Developer role switching is MFA-gated and constrained by the role condition.
         Sid      = "UserAssumeAccountRoles"
         Effect   = "Allow"
-        Action   = ["sts:AssumeRole"]
+        Action   = ["sts:AssumeRole"] # nosemgrep: terraform.lang.security.iam.no-iam-creds-exposure.no-iam-creds-exposure
         Resource = ["arn:aws:iam::${local.account_id}:role/*"]
         Condition = {
           Bool = {
@@ -176,7 +179,7 @@ resource "aws_iam_policy" "developer" {
   })
 }
 
-# trivy:ignore:AVD-AWS-0057
+# trivy:ignore:AWS-0057
 resource "aws_iam_policy" "mfa" {
   name        = "${var.system_name}-${var.env_type}-user-mfa-iam-policy"
   description = "User MFA IAM policy"
@@ -252,7 +255,7 @@ resource "aws_iam_policy" "mfa" {
   }
 }
 
-# trivy:ignore:AVD-AWS-0057
+# trivy:ignore:AWS-0057
 resource "aws_iam_policy" "account" {
   # checkov:skip=CKV_AWS_290:Account/activate APIs require broad permissions by design.
   # checkov:skip=CKV_AWS_355:Account-level actions do not support resource-level constraints.
@@ -305,31 +308,31 @@ resource "aws_iam_policy" "bedrock" {
   })
 }
 
-# trivy:ignore:AVD-AWS-0123
+# trivy:ignore:AWS-0123
 resource "aws_iam_group" "administrator" {
   name = "${var.system_name}-${var.env_type}-administrator-iam-group"
   path = "/"
 }
 
-# trivy:ignore:AVD-AWS-0123
+# trivy:ignore:AWS-0123
 resource "aws_iam_group" "developer" {
   name = "${var.system_name}-${var.env_type}-developer-iam-group"
   path = "/"
 }
 
-# trivy:ignore:AVD-AWS-0123
+# trivy:ignore:AWS-0123
 resource "aws_iam_group" "readonly" {
   name = "${var.system_name}-${var.env_type}-readonly-iam-group"
   path = "/"
 }
 
-# trivy:ignore:AVD-AWS-0123
+# trivy:ignore:AWS-0123
 resource "aws_iam_group" "billing" {
   name = "${var.system_name}-${var.env_type}-billing-iam-group"
   path = "/"
 }
 
-# trivy:ignore:AVD-AWS-0123
+# trivy:ignore:AWS-0123
 resource "aws_iam_group" "account" {
   name = "${var.system_name}-${var.env_type}-account-iam-group"
   path = "/"
