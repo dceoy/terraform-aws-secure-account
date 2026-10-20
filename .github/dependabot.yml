@@ -7,10 +7,7 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
   - package-ecosystem: terraform
-    directories:
-      - /envs/plt/
-      - /modules/iam/
-      - /modules/kms/
+    directory: /envs/plt/
     schedule:
       interval: daily
     open-pull-requests-limit: 10
