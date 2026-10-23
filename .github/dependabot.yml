@@ -10,6 +10,8 @@ updates:
       github-actions-dependencies:
         patterns:
           - '*'
+    cooldown:
+      default-days: 1
   - package-ecosystem: terraform
     directories:
       - /envs/plt/
@@ -22,3 +24,5 @@ updates:
       terraform-dependencies:
         patterns:
           - '*'
+    cooldown:
+      default-days: 1
